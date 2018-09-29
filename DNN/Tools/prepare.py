@@ -10,10 +10,10 @@ for file in onlyfiles:
 
         data = [line.split(',') for line in content.split('\n')]
         first_row = data[0]
-        lines_amount = int(first_row[0]) + 1
-        lines_length = int(first_row[1])
+        lines_amount = first_row[0]
+        lines_length = first_row[1]
 
-        if lines_amount == len(data) and lines_length == len(data[-1]) and len(first_row) == 2:
+        if lines_amount == str(len(data) - 1) and lines_length == str(len(data[-1])) and len(first_row) == 2:
             continue
         print(file, ': correcting')
 
