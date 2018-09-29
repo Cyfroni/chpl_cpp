@@ -13,7 +13,7 @@ vector<string> split(const string &, const string &);
 int main() {
     fstream stream;
     string line;
-    stream.open("../../abc.txt", ios::in);
+    stream.open("../../wdbc.data", ios::in);
 
     getline(stream, line);
     vector<string> parameters = split(line, ",");
@@ -27,15 +27,15 @@ int main() {
     for (int i = 0; i < dataAmount; ++i) {
         getline(stream, line);
         vector<string> input = split(line, ",");
-        transform(input.begin(), input.end() - 1, data[i].begin(), [](string &n) { return stod(n); });
-        results[i] = stoi(input[dataLength - 1]);
+        transform(input.begin() + 2, input.end(), data[i].begin(), [](string &n) { return stod(n); });
+        results[i] = input[1] == "M";
     }
 
     int xxx[] = {dataLength - 1, 100, 100, 2};
 
     ArtificialNeuralNetwork ANN(sizeof(xxx) / sizeof(xxx[0]), xxx);
 
-    for (int j = 0; j < 1000000; ++j) {
+    for (int j = 0; j < 10000; ++j) {
         int good = 0;
         for (int i = 0; i < dataAmount; ++i) {
             if (ANN.computeResult(&data[i][0]) == results[i]) {
