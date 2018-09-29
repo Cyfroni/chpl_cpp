@@ -1,5 +1,6 @@
-#include "Neuron.hpp"
+#include "Neuron.h"
 #include <fstream>
+#include <math.h>
 #include <iostream>
 
 using namespace std;

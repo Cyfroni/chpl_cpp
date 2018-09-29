@@ -1,8 +1,8 @@
-#ifndef _ANN_HPP
-#define _ANN_HPP
+#ifndef _ANN_H
+#define _ANN_H
 
 #include <string>
-#include "Neuron.hpp"
+#include "Neuron.h"
 
 enum InitializationFunction {
     Random, Sqrt, Xavier

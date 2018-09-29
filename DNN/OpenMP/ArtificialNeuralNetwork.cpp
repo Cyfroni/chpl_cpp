@@ -1,4 +1,4 @@
-#include "ArtificialNeuralNetwork.hpp"
+#include "ArtificialNeuralNetwork.h"
 #include <iostream>
 #include <random>
 #include <fstream>

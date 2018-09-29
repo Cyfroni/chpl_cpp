@@ -5,7 +5,8 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
-#include "ArtificialNeuralNetwork.hpp"
+#include <math.h>
+#include "ArtificialNeuralNetwork.h"
 
 using namespace std;
 

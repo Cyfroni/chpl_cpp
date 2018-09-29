@@ -1,5 +1,5 @@
-#ifndef _N_HPP
-#define _N_HPP
+#ifndef _N_H
+#define _N_H
 
 #include <string>
 
