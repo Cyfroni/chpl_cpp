@@ -8,11 +8,11 @@
 #include <omp.h>
 #include <deque>
 #include <climits>
+#include <tuple>
 
 using namespace std;
 
 
-constexpr auto threads = 8;
 constexpr auto predecessor = true;
 //constexpr auto N = 500;
 constexpr auto K = 4;
@@ -46,27 +46,26 @@ string st(const algoritm alg) {
 }
 
 void write_to_file_raw(matrix &table){
-    int n = table.size();
     ofstream file_out;
-    for(int i=0;i<n;++i){
+    for(int i=0;i<_n;++i){
         file_out.open(to_string(i) + ".txt", fstream::out);
-        for(int j=0;j<n;++j){
+        for(int j=0;j<_n;++j){
             file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
         }
-    file_out.close();
+        file_out.close();
     }
 }
 
 void write_to_file(matrix &table){
-    int n = table.size();
-    ofstream file_out;
-    for(int i=0;i<n;++i){
-        file_out.open(to_string(i) + ".txt", fstream::out);
-        for(int j=0;j<n;++j){
-            file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
-        }
-    file_out.close();
-    }
+//    int n = table.size();
+//    ofstream file_out;
+//    for(int i=0;i<n;++i){
+//        file_out.open(to_string(i) + ".txt", fstream::out);
+//        for(int j=0;j<n;++j){
+//            file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
+//        }
+//    file_out.close();
+//    }
 }
 
 void print(const vector <array<int, 3>> &g) {
@@ -245,7 +244,7 @@ void auction(vec &table, const vector <array<int, 3>> &g, const int source) {
 
 }
 
-void routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm alg) {
+tuple<double, int, int> routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm alg, int threads) {
     //const auto tab = new vector< vector<pair<int, string>>* >(n);
     decltype(bellman_ford) *fun;
 
@@ -260,7 +259,7 @@ void routing_table(matrix &table, const vector <array<int, 3>> &graph, const alg
     else if (alg == Auction)
         fun = &auction;
     else
-        return;
+        return make_tuple(0.0, 0, 0);
 
 
     int num_threads, num_cores;
@@ -279,10 +278,12 @@ void routing_table(matrix &table, const vector <array<int, 3>> &graph, const alg
     }
     const auto t2 = chrono::high_resolution_clock::now();
     chrono::duration<double, std::milli> fp_ms = t2 - t1;
-    cout << "algoritm: " << st(alg) << endl
-         << "time: " << fp_ms.count() / 1000.0 << " s\n"
-         << "threads: " << num_threads << endl
-         << "cores: " << num_cores << "\n\n";
+//    cout << "algoritm: " << st(alg) << endl
+//         << "time: " << fp_ms.count() / 1000.0 << " s\n"
+//         << "threads: " << num_threads << endl
+//         << "cores: " << num_cores << "\n\n";
+
+    return make_tuple(fp_ms.count() / 1000.0, num_cores, num_threads);
 }
 
 bool check(cube &table) {
@@ -298,7 +299,7 @@ bool check(cube &table) {
     return true;
 }
 
-int main(int argc, char **argv) // argv = [name, n, a, c]
+int main(int argc, char **argv) // argv = [name, alg, threads]
 {
 
     vector <array<int, 3>> graph;
@@ -314,17 +315,27 @@ int main(int argc, char **argv) // argv = [name, n, a, c]
     cube table(K, matrix(_n, vec(_n)));
 
     int alg = argv[2][0] - 48;
+    int threads = argv[3][0] - 48;
 
     if (alg == 0) {
         for (int i = 0; i < K; ++i)
-            routing_table(table[i], graph, algoritm(i + 1));
+            routing_table(table[i], graph, algoritm(i + 1), 8);
 
         if (check(table))
             cout << "OK\n";
         else cout << "DIFFERENT\n";
 
     }
-    routing_table(table[0], graph, algoritm(alg));
+
+    auto result = routing_table(table[0], graph, algoritm(alg), threads);
+
+    cout<< get<0>(result) << " " << st(algoritm(alg)) << " " << get<2>(result) << endl;
+
+    ofstream file_out("result.txt", fstream::out);
+
+    file_out << get<0>(result) << ","<< get<1>(result)<<"," << get<2>(result) << endl;
+
+    file_out.close();
 
 
     write_to_file_raw(table[0]);
