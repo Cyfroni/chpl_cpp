@@ -2,6 +2,10 @@ cd OpenMP
 sh compile.sh
 cd ..
 
+cd Chapel
+sh compile.sh
+cd ..
+
 num=1
 
 for file in "$@"
@@ -15,7 +19,14 @@ do
             cd OpenMP
             sh clear.sh
             ./openmp.out $file $alg $threads
-            cat result.txt >> ../result.txt
+            #openmp = cat result.txt >> ../result.txt
+            cd ..
+
+            cd Chapel
+            sh clear.sh
+            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+            ./chpl.out --file=$file --alg=$alg
+            #cat result.txt >> ../result.txt
             cd ..
         done
 

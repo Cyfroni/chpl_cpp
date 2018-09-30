@@ -3,9 +3,13 @@
 // ./chpl.out --c=true
 // ./chpl.out --a=2
 //config const threads = 8;
-config const n = 50;
+/* export CHPL_TASKS=fifo; */
+config const file = " ";
+config const alg = 0;
 config const c = false;
 config const a = 1;
+
+/* export CHPL_RT_NUM_THREADS_PER_LOCALE 'MAX_PHYSICAL'; */
 
 var _n : int;
 enum algoritm{
@@ -130,7 +134,7 @@ proc slf(table, g, source){
 
 proc lll(table, g, source)
 {
-	use DistributedDeque;
+	/* use DistributedDeque;
 
 	for i in table.domain{
 		table[i] = (1 << 30, "-");
@@ -151,7 +155,7 @@ proc lll(table, g, source)
 		sum -= table[u][1];
 		is[u] = false;
 
-		var v : int;
+		var v  = 0 : int;
 		for j in g {
 			if u == j[1] then v = j[2];
 			else if u == j[2] then v = j[1];
@@ -178,7 +182,7 @@ proc lll(table, g, source)
 				}//
 			}
 		}
-	}
+	} */
 }
 
 proc routing_table(table, graph, al)
@@ -242,7 +246,7 @@ proc routing_table(table, graph, al)
 }
 
 proc main() {
-  var reader = open('graph' + n : string + '.txt', iomode.r).reader();
+  var reader = open(file, iomode.r).reader();
   reader.read(_n);
   var graph: [1..0] (3*int);
 	var x : [1..3] int;
@@ -252,7 +256,7 @@ proc main() {
   reader.close();
 
   var table: [1.._n, 1.._n] (int, string);
-  routing_table(table, graph, a);
+  routing_table(table, graph, alg);
   var cond = true;
   var inp : int;
   if c {
