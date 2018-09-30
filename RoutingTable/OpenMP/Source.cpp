@@ -45,6 +45,30 @@ string st(const algoritm alg) {
     }
 }
 
+void write_to_file_raw(matrix &table){
+    int n = table.size();
+    ofstream file_out;
+    for(int i=0;i<n;++i){
+        file_out.open(to_string(i) + ".txt", fstream::out);
+        for(int j=0;j<n;++j){
+            file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
+        }
+    file_out.close();
+    }
+}
+
+void write_to_file(matrix &table){
+    int n = table.size();
+    ofstream file_out;
+    for(int i=0;i<n;++i){
+        file_out.open(to_string(i) + ".txt", fstream::out);
+        for(int j=0;j<n;++j){
+            file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
+        }
+    file_out.close();
+    }
+}
+
 void print(const vector <array<int, 3>> &g) {
     cout << "  EndNodes\tWeight\n";
     for (const auto &i : g)
@@ -278,29 +302,18 @@ int main(int argc, char **argv) // argv = [name, n, a, c]
 {
 
     vector <array<int, 3>> graph;
-    ifstream file(string("graph") + argv[1] + ".txt", ios::out);
-    file >> _n;
+    ifstream file_in(string(argv[1]), fstream::in);
+    file_in >> _n;
     int a, b, c;
-    while (file >> a >> b >> c) {
+    while (file_in >> a >> b >> c) {
         graph.emplace_back(array < int, 3 > {a, b, c});
     }
 
-
-    file.close();
+    file_in.close();
 
     cube table(K, matrix(_n, vec(_n)));
 
-    /*while (true)
-    {*/
     int alg = argv[2][0] - 48;
-    //cout<<alg;
-    /*cout << "0: all\n"
-        << "1: Bellman Ford\n"
-        << "2: Generic\n"
-        << "3: SLF\n"
-        << "4: LLL\n"
-        << "5: Auction (TODO)\n";
-    cin >> alg;*/
 
     if (alg == 0) {
         for (int i = 0; i < K; ++i)
@@ -310,28 +323,25 @@ int main(int argc, char **argv) // argv = [name, n, a, c]
             cout << "OK\n";
         else cout << "DIFFERENT\n";
 
-        //continue;
     }
-    /*if (alg < 0 || alg > 5)
-        break;*/
     routing_table(table[0], graph, algoritm(alg));
 
-    while (argc == 4) {
-        int node;
-        cout << "0: print graph\n"
-             << "x: print x Node\n";
-        cin >> node;
 
-        if (node == 0)
-            print(graph);
-        else if (node < 0 || node > _n)
-            break;
-        else
-            print(table[0][node - 1]);
-    }
+    write_to_file_raw(table[0]);
 
-    //}
-    // delete *table;
-    // system("pause");
+//    while (argc == 4) {
+//        int node;
+//        cout << "0: print graph\n"
+//             << "x: print x Node\n";
+//        cin >> node;
+//
+//        if (node == 0)
+//            print(graph);
+//        else if (node < 0 || node > _n)
+//            break;
+//        else
+//            print(table[0][node - 1]);
+//    }
+
     return 0;
 }
