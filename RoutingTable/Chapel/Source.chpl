@@ -20,6 +20,16 @@ enum algoritm{
 	Auction
 };
 
+proc write_to_file_raw(table){
+
+    for i in 1.._n{
+				var writer = open(i: string + ".node", iomode.cw).writer();
+				for ((distance, predecessor), node) in zip(table[i,..], 1.._n){
+					writer.writeln(node,":",predecessor,"(",distance,")");
+				}
+		}
+}
+
 proc bellman_ford(table, g, source){
 	for i in table.domain{
 		table[i] = (1 << 30, "-");
@@ -191,10 +201,10 @@ proc routing_table(table, graph, al)
 		for i in 1..4{
 			routing_table(table,graph,i);
 		}
-		return;
+		return -1;
 	}
 
-	writeln(al : algoritm, ":");
+	//writeln(al : algoritm, ":");
 	use Time;
 	const startTime = getCurrentTime();
 
@@ -220,8 +230,9 @@ proc routing_table(table, graph, al)
 	}
 
 	const stopTime = getCurrentTime();
-	writeln("Elapsed time was: ", stopTime - startTime,"\n");
-
+	const elapsedTime = stopTime - startTime;
+	//writeln("Elapsed time was: ", elapsedTime,"\n");
+	return elapsedTime;
   /*writeln(alg);
 	use Time;
 	select alg {
@@ -256,8 +267,14 @@ proc main() {
   reader.close();
 
   var table: [1.._n, 1.._n] (int, string);
-  routing_table(table, graph, alg);
-  var cond = true;
+  var elapsedTime = routing_table(table, graph, alg);
+
+	var writer = open("time.txt", iomode.cw).writer();
+	writer.write(elapsedTime);
+
+	write_to_file_raw(table);
+
+  /* var cond = true;
   var inp : int;
   if c {
 		while cond{
@@ -276,5 +293,5 @@ proc main() {
 				cond = false;
 			}
   	}
-	}
+	} */
 }

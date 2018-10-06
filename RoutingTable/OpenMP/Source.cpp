@@ -48,9 +48,10 @@ string st(const algoritm alg) {
 void write_to_file_raw(matrix &table){
     ofstream file_out;
     for(int i=0;i<_n;++i){
-        file_out.open(to_string(i) + ".txt", fstream::out);
+        file_out.open(to_string(i + 1) + ".node", fstream::out);
         for(int j=0;j<_n;++j){
-            file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
+            file_out << j + 1 << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
+            // file_out << j << ":" << table[i][j].second << endl;
         }
         file_out.close();
     }
@@ -329,11 +330,11 @@ int main(int argc, char **argv) // argv = [name, alg, threads]
 
     auto result = routing_table(table[0], graph, algoritm(alg), threads);
 
-    cout<< get<0>(result) << " " << st(algoritm(alg)) << " " << get<2>(result) << endl;
+    //cout<< get<0>(result) << " " << st(algoritm(alg)) << " " << get<2>(result) << endl;
 
-    ofstream file_out("result.txt", fstream::out);
+    ofstream file_out("time.txt", fstream::out);
 
-    file_out << get<0>(result) << ","<< get<1>(result)<<"," << get<2>(result) << endl;
+    file_out << get<0>(result);// << ","<< get<1>(result)<<"," << get<2>(result) << endl;
 
     file_out.close();
 
