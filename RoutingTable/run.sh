@@ -34,7 +34,7 @@ do
     printf "\t OpenMP\t\t\tChapel\n" >> $timeFile
     file="../$file"
 
-    for alg in 1 2 3 #4
+    for alg in 1 2 3 4
     do
         algorithmName=${algorithms[$alg]}
         pathForNodes="results/${fileName}_${algorithmName}"
@@ -70,12 +70,21 @@ do
               difference=$(diff "$openMPFile" "$chapelFile")
 
               if [ -n "$difference" ]; then
-                echo "\n### ERROR ###"
-                echo "$entry" does not match
-#                echo "\n$difference"
+                errorMessage="\t<-- mismatch"
+                printf "$difference" > ../$pathForNodes/$entry"_diff"
+
+                mp=$(sed "s/:[[:digit:]]*//" "$openMPFile")
+                chpl=$(sed "s/:[[:digit:]]*//" "$chapelFile")
+                errorDifference=$(diff <(printf "$mp") <(printf "$chpl"))
+
+                if [ -n "$errorDifference" ]; then
+                    errorMessage="\t<-- error"
+                    printf "$errorDifference" > ../$pathForNodes/$entry"_error"
+                fi
+
                 mv $openMPFile ../$pathForNodes/$entry"_OpenMP"
                 mv $chapelFile ../$pathForNodes/$entry"_Chapel"
-                errorMessage="\t<-- With files mismatch"
+
               else
                 mv $openMPFile ../$pathForNodes
                 rm $chapelFile
@@ -84,7 +93,7 @@ do
             cd ..
 
 #            result="\t$threads: $openmp\t;\t$chapel $errorMessage\n"
-            echo "\t$threads: $openmp\t;\t$chapel $errorMessage\n"
+            printf "\t$threads: $openmp\t;\t$chapel $errorMessage\n"
             printf "\t$threads: $openmp\t;\t$chapel $errorMessage\n" >> $timeFile
         done
     done

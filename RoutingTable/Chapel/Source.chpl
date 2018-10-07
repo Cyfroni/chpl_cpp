@@ -9,8 +9,6 @@ config const alg = 0;
 config const c = false;
 config const a = 1;
 
-/* export CHPL_RT_NUM_THREADS_PER_LOCALE 'MAX_PHYSICAL'; */
-
 var _n : int;
 enum algoritm{
 	Belman_ford = 1,
@@ -144,7 +142,7 @@ proc slf(table, g, source){
 
 proc lll(table, g, source)
 {
-	/* use DistributedDeque;
+	use DistributedDeque;
 
 	for i in table.domain{
 		table[i] = (1 << 30, "-");
@@ -161,7 +159,7 @@ proc lll(table, g, source)
 
 	var sum = 0;
 	while Q.getSize() != 0{
-		var u = Q.popBack();
+		var (x, u) = Q.popBack();
 		sum -= table[u][1];
 		is[u] = false;
 
@@ -181,18 +179,21 @@ proc lll(table, g, source)
 					sum += table[v][1];
 					var avg = (sum * 1.01) / Q.getSize();
 					//
-					var (xx, v) = Q.popFront();
-					Q.pushFront(v);
+					var (xx, uu) = Q.popFront();
+					Q.pushFront(uu);
+					v = uu;
 					while table[v][1] > avg {
 						var (xy, vv) = Q.popFront();
 						Q.pushBack(v);
+						(xy, vv) = Q.popFront();
+						Q.pushFront(vv);
 						v = vv;
 					}
 					is[v] = true;
 				}//
 			}
 		}
-	} */
+	}
 }
 
 proc routing_table(table, graph, al)
