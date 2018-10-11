@@ -1,0 +1,12 @@
+[submodule "RoutingTable"]
+	path = RoutingTable
+	url = https://github.com/Cyfroni/chpl_cpp
+	branch = RoutingTable
+[submodule "DNN"]
+	path = DNN
+	url = https://github.com/Cyfroni/chpl_cpp
+	branch = DNN
+[submodule "CenPowell"]
+	path = CenPowell
+	url = https://github.com/Cyfroni/chpl_cpp
+    branch = CenPowell
