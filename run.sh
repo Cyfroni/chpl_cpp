@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+source chapel-1.18.0/util/setchplenv.bash
+args="graph50.in"
+#args = "$@"
+
 algorithms=(
     null
     BF
@@ -25,7 +29,7 @@ cd ..
 rm -rf results/
 mkdir results
 
-for file in "$@"
+for file in $args
 do
     fileName=${file:0:-3}
     timeFile="results/$fileName"_time".txt"
