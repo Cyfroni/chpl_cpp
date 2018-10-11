@@ -1,1 +1,0 @@
-# Chapel and OpenMP comparizon
