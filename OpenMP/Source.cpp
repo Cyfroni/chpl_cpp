@@ -10,14 +10,13 @@ using namespace std;
 
 vector<string> split(const string &, const string &);
 
-int main() {
-    fstream stream;
+int main(int argc, char **argv) { // argv = [file, cnn, threads]
+    fstream file, cnn;
     string line;
-    stream.open("../../wdbc.data", ios::in);
+    file.open("../" + string(argv[1]), ios::in);
 
-    getline(stream, line);
+    getline(file, line);
     vector<string> parameters = split(line, ",");
-
     int dataAmount = stoi(parameters[0]);
     int dataLength = stoi(parameters[1]);
 
@@ -25,17 +24,20 @@ int main() {
     vector<int> results(dataAmount);
 
     for (int i = 0; i < dataAmount; ++i) {
-        getline(stream, line);
-        vector<string> input = split(line, ",");
-        transform(input.begin() + 2, input.end(), data[i].begin(), [](string &n) { return stod(n); });
-        results[i] = input[1] == "M";
+            getline(file, line);
+            vector<string> input = split(line, ",");
+            transform(input.begin(), input.end(), data[i].begin(), [](string &n) { return stod(n); });
     }
 
-    int xxx[] = {dataLength - 1, 100, 100, 2};
+    cnn.open("../" + string(argv[2]), ios::in);
+    getline(cnn, line);
+    vector<string> yyy = split(line, ",");
+
+    int xxx[] = {stoi(yyy[0]), stoi(yyy[1]), stoi(yyy[2]), stoi(yyy[3])};
 
     ArtificialNeuralNetwork ANN(sizeof(xxx) / sizeof(xxx[0]), xxx);
 
-    for (int j = 0; j < 10000; ++j) {
+    for (int j = 0; j < 100; ++j) {
         int good = 0;
         for (int i = 0; i < dataAmount; ++i) {
             if (ANN.computeResult(&data[i][0]) == results[i]) {

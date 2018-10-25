@@ -3,12 +3,12 @@ from os.path import isfile
 
 path = '../'
 
-onlyfiles = [f for f in listdir(path) if isfile(path + f)]
+onlyfiles = [f for f in listdir(path) if isfile(path + f) and f.endswith('.data')]
 for file in onlyfiles:
     with open(path + file, 'r+') as f:
         content = f.read()
 
-        data = [line.split(',') for line in content.split('\n')]
+        data = [line.split(',') for line in content.splitlines()]
         first_row = data[0]
         lines_amount = first_row[0]
         lines_length = first_row[1]
