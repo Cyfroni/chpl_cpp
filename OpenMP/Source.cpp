@@ -11,12 +11,32 @@
 #include <math.h>
 #include <chrono>
 #include <omp.h>
+#include <algorithm>
+#include <random>
+
+#include <stdlib.h>
+#include <fstream>
+#include <iomanip>
+#include <regex>
 
 using namespace std;
 
 int threads;
 
-vector <float> sigmoid_d (const vector <float>& m1) {
+vector<string> split(const string &str, const string &delim) {
+    vector<string> tokens;
+    size_t prev = 0, pos = 0;
+    do {
+        pos = str.find(delim, prev);
+        if (pos == string::npos) pos = str.length();
+        string token = str.substr(prev, pos - prev);
+        tokens.push_back(token);
+        prev = pos + delim.length();
+    } while (pos < str.length() && prev < str.length());
+    return tokens;
+}
+
+vector<float> sigmoid_d (const vector <float>& m1) {
 
     /*  Returns the value of the sigmoid function derivative f'(x) = f(x)(1 - f(x)),
         where f(x) is sigmoid function.
@@ -146,9 +166,9 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
 
     vector <float> output (m1_rows*m2_columns);
 
-    #pragma omp parallel num_threads(threads)
+    //#pragma omp parallel num_threads(threads)
     {
-        #pragma omp for schedule(guided)
+      //  #pragma omp for schedule(guided)
         for( int row = 0; row < m1_rows; ++row ) {
             for( int col = 0; col < m2_columns; ++col ) {
                 output[ row * m2_columns + col ] = 0.f;
@@ -162,7 +182,8 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
     return output;
 }
 
-void print ( const vector <float>& m, int n_rows = 0, int n_columns = 1) {
+template <class T>
+void print ( const vector <T>& m, int n_rows = 1) {
 
     /*  "Couts" the input vector as n_rows x n_columns matrix.
         Inputs:
@@ -171,7 +192,7 @@ void print ( const vector <float>& m, int n_rows = 0, int n_columns = 1) {
             n_columns: int, number of columns in the left matrix m1
     */
 
-    n_rows == 0 ? m.size() : n_rows;
+    int n_columns = m.size() / n_rows;
 
     for( int i = 0; i < n_rows; ++i ) {
         for( int j = 0; j < n_columns; ++j ) {
@@ -183,46 +204,116 @@ void print ( const vector <float>& m, int n_rows = 0, int n_columns = 1) {
 
 }
 
-float DNN(vector<float>& input, vector<float>& y, vector<vector<float>>& W) {
+vector <float> softmax (const vector <float>& z, const int dim) {
 
-    int epoch = 5000;
+    const int zsize = static_cast<int>(z.size());
+    vector <float> out;
+
+    for (unsigned i = 0; i != zsize; i += dim) {
+        vector <float> foo;
+        for (unsigned j = 0; j != dim; ++j) {
+            foo.push_back(z[i + j]);
+        }
+
+        float max_foo = *max_element(foo.begin(), foo.end());
+
+        for (unsigned j = 0; j != dim; ++j) {
+            foo[j] = exp(foo[j] - max_foo);
+        }
+
+        float sum_of_elems = 0.0;
+        for (unsigned j = 0; j != dim; ++j) {
+            sum_of_elems = sum_of_elems + foo[j];
+        }
+
+        for (unsigned j = 0; j != dim; ++j) {
+            out.push_back(foo[j]/sum_of_elems);
+        }
+    }
+    return out;
+}
+
+static vector<float> random_vector(const int size)
+{
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<> distribution(0.0, 0.05);
+    static default_random_engine generator;
+
+    vector<float> data(size);
+    generate(data.begin(), data.end(), [&]() { return distribution(generator); });
+//    print(data);
+    return data;
+}
+
+float DNN(vector<float>& input, vector<float>& y, vector<int>& cnnSize) {
+
+    int epoch = 50;
     int dataAmount = y.size();
+    int categories = cnnSize.back();
 
+    vector<vector<float>> W;
 
+    for ( int size : cnnSize){
+        W.push_back(random_vector(size));
+    }
+
+    auto activate = sigmoid;
+    auto deactivate = sigmoid_d;
+    auto normalize = softmax;
 
     const auto t1 = chrono::high_resolution_clock::now();
     for (unsigned i = 1; i <= epoch; ++i) {
         vector<vector<float>> X = {input};
 
-        for (int i=0; i<W.size() - 1; ++i) {
-            int x_rows = W[i].size();
-            int w_rows = W[i+1].size();
-            vector<float> &x = X.back();
-            vector<float> &w = W[i];
-            vector<float> &&x_new = sigmoid(dot(x, w, x_rows, dataAmount, w_rows));
-            X.push_back(x_new);
+        for (int j=0; j<cnnSize.size() - 1; ++j) {
+            int a_size = cnnSize[j];
+            int b_size = cnnSize[j+1];
+
+            vector<float> &a = X.back();
+            vector<float> &w = W[j];
+            vector<float> &&b = activate(dot(a, w, dataAmount, a_size, b_size));
+            X.push_back(b);
+//            print(b, b_size);
         }
 
-        vector<float> pred_error = y - X.back();
+        vector<float> &a = X.back();
+        vector<float> &w = W.back();
 
-        for (int i=W.size() - 2; i>=0; --i) {
-            int x_rows = W[i+1].size();
-            int p_rows = W[i].size();
-            vector<float> &x = X[i+1];
-            vector<float> &w = W[i];
+        vector<float> pred = normalize(dot(a, w, dataAmount, cnnSize.rbegin()[1], categories), categories);
 
-            vector<float> pred_delta = pred_error * sigmoid_d(x);
-            vector<float> w_delta = dot(transpose( &x[0], x_rows, dataAmount ), pred_delta, dataAmount, x_rows, p_rows);
-            W[i] = w + w_delta;
+//        print(dot(a, w, dataAmount, cnnSize.rbegin()[1], categories), categories);
+        print(pred, categories);
+
+//        vector<float> &l = pred;
+        vector<float> dl = pred - y;
+//
+        vector<float> *d = &dl;
+
+        for (int j=cnnSize.size() - 2; j>=0; --j) {
+            int a_size = cnnSize[j];
+            int b_size = cnnSize[j+1];
+            //int c_size = cnnSize[j+1];
+
+            vector<float> &a = X[j+1];
+            vector<float> &w = W[j+1];
+
+            vector<float> &&dx = j == cnnSize.size() - 2 ? dl :
+                dot(*d, transpose( &w[0], b_size, cnnSize[j+1] ), dataAmount, cnnSize[j+1], b_size) * deactivate(a);
+
+            vector<float> dw = dot(transpose( &a[0], dataAmount, a_size ), *d, a_size, dataAmount, b_size);
+            w = w + dw;
+            d = new vector<float>(dx);
         }
 
-        if (i == 1){
+        if (i == epoch){
             //cout<<W.size();
-            for (int j=0; j<W.size(); ++j){
-                cout<<"##\n";
-                print ( X[j], dataAmount, W[j].size() );
-                cout<<"@@\n";
-            }
+            cout<<"##\n";
+//            for (auto w : W){
+//                print(w);
+//            }
+            cout<<"@@\n";
+//            print(pred);
         };
 
     }
@@ -232,67 +323,48 @@ float DNN(vector<float>& input, vector<float>& y, vector<vector<float>>& W) {
     return fp_ms.count() / 1000.0;
 }
 
-vector<string> split(const string &str, const string &delim) {
-    vector<string> tokens;
-    size_t prev = 0, pos = 0;
-    do {
-        pos = str.find(delim, prev);
-        if (pos == string::npos) pos = str.length();
-        string token = str.substr(prev, pos - prev);
-        tokens.push_back(token);
-        prev = pos + delim.length();
-    } while (pos < str.length() && prev < str.length());
-    return tokens;
-}
-
 int main(int argc, char **argv) { // argv = [file, cnn, threads]
+    fstream file, cnn;
+    string line;
 
     threads = stoi(argv[3]);
 
-    vector<float> x {
-        5.1, 3.5, 1.4, 0.2,
-        4.9, 3.0, 1.4, 0.2,
-        6.2, 3.4, 5.4, 2.3,
-    };
+    file.open("../" + string(argv[1]), ios::in);
 
-    vector<float> y {
-        0,
-        0,
-        1,
-    };
+    getline(file, line);
+    vector<string> parameters = split(line, ",");
+    int dataAmount = stoi(parameters[0]);
+    int dataLength = stoi(parameters[1]);
 
-    vector<vector<float>> W {
-        {0.5, 0.5, 0.5, 0.5},
-        {1}
-    };
+    vector<float> data(dataAmount * (dataLength - 1));
+    vector<float> results(dataAmount);
 
-    float time = DNN(x,y,W);
+    for (int i = 0; i < dataAmount; ++i) {
+            getline(file, line);
+            vector<string> input = split(line, ",");
+            transform(input.begin(), input.begin() + 2, results.begin() + i, [](string &n) { return stof(n); });
+            transform(input.begin() + 1, input.end(), data.begin() + i * (dataLength - 1) , [](string &n) { return stof(n); });
+    }
+
+    file.close();
+    cnn.open("../" + string(argv[2]), ios::in);
+
+
+    getline(cnn, line);
+    vector<string> cnnParams = split(line, ",");
+
+    vector<int> cnnSize(cnnParams.size() + 1);
+    cnnSize[0] = dataLength - 1;
+    transform(cnnParams.begin(), cnnParams.end(), cnnSize.begin() + 1, [](string &n) { return stoi(n); });
+
+    cnn.close();
+
+//    print(data, dataAmount);
+//    print(results, dataAmount);
+//    print(cnnSize);
+    float time = DNN(data,results,cnnSize);
 
     cout<<endl<<"time: "<<time<<endl;
 
-
-//    fstream file, cnn;
-//    string line;
-//    file.open("../" + string(argv[1]), ios::in);
-//    cnn.open("../" + string(argv[2]), ios::in);
-//
-//    getline(file, line);
-//    vector<string> parameters = split(line, ",");
-//    int dataAmount = stoi(parameters[0]);
-//    int dataLength = stoi(parameters[1]);
-//
-//    vector<vector<float>> data(dataAmount, vector<float>(dataLength - 1));
-//    vector<int> results(dataAmount);
-//
-//    for (int i = 0; i < dataAmount; ++i) {
-//            getline(file, line);
-//            vector<string> input = split(line, ",");
-//            transform(input.begin() + 1, input.end(), data[i].begin(), [](string &n) { return stof(n); });
-//            results[i] = stof(input[0])
-//    }
-//
-//
-//    getline(cnn, line);
-//    vector<string> xxx = split(line, ",");
-
+    return 0;
 }

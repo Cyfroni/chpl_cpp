@@ -198,16 +198,16 @@ int main(int argc, const char * argv[]) {
     int y_size = y.size();
     int w_size = W.size();
 
-    for (unsigned i = 0; i != 500; ++i) {
+    for (unsigned i = 0; i != 5000; ++i) {
 
-        vector<float> pred = sigmoid(dot(X, W, w_size , y_size, 1 ) );
+        vector<float> pred = sigmoid(dot(X, W, 3 , 4, 1 ) );
         vector<float> pred_error = y - pred;
         vector<float> pred_delta = pred_error * sigmoid_d(pred);
-        vector<float> W_delta = dot(transpose( &X[0], y_size, w_size ), pred_delta, w_size, y_size, 1);
+        vector<float> W_delta = dot(transpose( &X[0], 3, 4 ), pred_delta, 4, 3, 1);
         W = W + W_delta;
 
-        if (i == 49){
-            print ( pred, y_size, 1 );
+        if (i == 4999){
+            print ( pred , 3, 1);
         };
     };
 

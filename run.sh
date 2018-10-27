@@ -30,7 +30,7 @@ for file in $args
 do
     for CNN in $cnn
     do
-        for threads in 4 3 2 1
+        for threads in 4
         do
 
             cd OpenMP
