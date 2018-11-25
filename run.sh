@@ -34,12 +34,10 @@ do
         do
 
 #            cd OpenMP
-#            OpenMP/clear.sh
 #            ./openmp.out $file $CNN $threads
 #            cd ..
 
             cd Chapel
-            ./clear.sh
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
             ./chpl.out #--file=$file
             cd ..
