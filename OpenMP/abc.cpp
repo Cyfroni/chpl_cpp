@@ -313,7 +313,7 @@ int main(int argc, const char * argv[]) {
     cout << "Loading data ...\n";
     vector<float> X_train;
     vector<float> y_train;
-    ifstream myfile ("train.txt");
+    ifstream myfile ("../train.txt");
     if (myfile.is_open())
     {
         while ( getline (myfile,line) )

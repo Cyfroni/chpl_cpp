@@ -11,14 +11,14 @@ cnn="*.cnn"
 
 cd OpenMP
 chmod 755 compile.sh
-./compile.sh
+./compile.sh || exit 1
 chmod 755 clear.sh
 ./clear.sh
 cd ..
 
 cd Chapel
 chmod 755 compile.sh
-./compile.sh
+./compile.sh || exit 1
 chmod 755 clear.sh
 ./clear.sh
 cd ..
@@ -33,18 +33,16 @@ do
         for threads in 4
         do
 
-            cd OpenMP
-            ./clear.sh
-            ./openmp.out $file $CNN $threads
-    #        openmp=$(cat time.txt)
-            cd ..
+#            cd OpenMP
+#            OpenMP/clear.sh
+#            ./openmp.out $file $CNN $threads
+#            cd ..
 
-    #        cd Chapel
-    #        ./clear.sh
-    #        export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-    #        ./chpl.out --file=$file
-    #        chapel=$(cat time.txt)
-    #        cd ..
+            cd Chapel
+            ./clear.sh
+            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+            ./chpl.out #--file=$file
+            cd ..
 
         done
     done
