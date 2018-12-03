@@ -18,14 +18,14 @@ for n in 100
 do
     for threads in 4
     do
-        cd OpenMP
-        ./openmp.out $n $threads
-        cd ..
-
-#       cd Chapel
-#       export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-#       ./chpl.out #--file=$file
-#       cd ..
+#        cd OpenMP
+#        ./openmp.out $n $threads
+#        cd ..
+#
+       cd Chapel
+       export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+       ./chpl.out
+       cd ..
 
     done
 done
