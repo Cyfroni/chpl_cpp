@@ -181,6 +181,10 @@ void local_prob_init(double x[], double low[], double hi[], void *param_)
        low[j]=-bigN;
        hi[j]=bigN;
    }
+   for (int xxx = 0; xxx<=ni; xxx++){
+     printf("%f ", x[xxx]);
+   }
+   printf("prob\n");
 }
 
 /****************************************************************************/
@@ -204,6 +208,12 @@ void local_fun(double *x, double *f, void *param_)
       aux = lambda[i]*x[ni] - lambda[jprev]*x[1];
    }
    *f = 0.5*sum + aux;
+
+   // for (int xxx = 0; xxx<=ni; xxx++){
+   //   printf("%f ", x[xxx]);
+   // }
+   // printf("%f ", *f);
+   // printf("fun\n");
 }
 
 /* **************************************************************************/
@@ -223,6 +233,15 @@ void local_con(double *x, double *con, void *param_)
       con[j] = -0.5+pow(-1,jabs)*jabs + x[j] - x[j+1];
    }
    if( p == 1 ) con[ni] = ni - 0.5 - x[1] + x[ni];
+
+   // for (int xxx = 0; xxx<=ni; xxx++){
+   //   printf("%f ", x[xxx]);
+   // }
+   // printf("##");
+   // for (int xxx = 0; xxx<=ni; xxx++){
+   //   printf("%f ", con[xxx]);
+   // }
+   // printf("con\n");
 }
 
 /***************************************************************************/
@@ -279,7 +298,7 @@ int main(int argc, char **argv)
        for(j=0;j<=ni;j++)
            xprev[i][j]=0.;
    }
-   printf("Solving Powell20 problem for: n=%d,  p=%d...\n", n, p);
+   printf("<OpenMP>\nSolving Powell20 problem for: n=%d,  p=%d...\n", n, p);
    t0=omp_get_wtime();
    if( p == 1 ){
 
@@ -317,7 +336,7 @@ int main(int argc, char **argv)
             donlp2_wrapper(nv, nc, &fopt[i], xopt[i], lamopt[i],
                            local_prob_init, local_fun, local_con, &par);
          }
-
+        //break;
          /* the coordination - change of Lagrange multipliers (prices for the
             violation of constraints) due to a steepest ascent gradient
             algorithm,  so as to maximize the value of the dual function ft */
