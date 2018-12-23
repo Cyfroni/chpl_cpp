@@ -2,15 +2,14 @@
 require "../Tools/donlp2/donlp2_wrapper.h";
 require "../Tools/donlp2/donlp2_wrapper.c";
 require "../Tools/donlp2/donlp2.c";
-/* require "a.c"; */
 
 extern proc donlp2_wrapper(args...) : c_int;
 
 param bigN = 1e20;
 param epsilon = 1e-6;
 
-param n = 10;
-param p = 2;
+param n = 100;
+param p = 10;
 param ni = n/p;
 type c_vec = (ni+1)*real;
 type chpl_array = [1..ni] real;
@@ -43,27 +42,23 @@ proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ 
 
   low = min(c_vec);
   hi = max(c_vec);
-  writeln(x, "prob");
 }
 
 proc local_fun(ref x : c_vec, ref f : real, ref param_ : params){
   var i = param_[1];
+  var sum = + reduce x**2;
   var jprev = (i-2+p) % p + 1;
-  f = 0.5 * (+ reduce x**2) - x[1] + lamb[i]*x[ni+1] - lamb[jprev]*x[2];
-  //writeln(x, f, 'fun');
+  var aux = lamb[i]*x[ni+1] - lamb[jprev]*x[2];
+  f = 0.5 * sum + aux;
 }
 
 proc local_con(ref x : c_vec, ref con : c_vec, ref param_ : params){
   var i = param_[1];
-  //[i in 2..ni+1 with (ref con)] con[i] = -0.5+((-1)**(i-1))*(i-1) + x[i] - x[if i > ni then 2 else i+1];
   for j in 2..ni {
      var jabs = (i-1)*ni + j - 1;
-     con[j] = -0.5+(-1)**(jabs)*(jabs) + x[j] - x[j+1];
+     con[j] = -0.5+(-1)**jabs*jabs + x[j] - x[j+1];
   }
   if( p == 1 ) then con[ni+1] = ni - 0.5 - x[2] + x[ni+1];
-
-  //[i in 1..ni with (ref con)] con[i+1] = -0.5+((-1)**i)*i + x[i+1] - x[nextIndex(i+1)];
-  //writeln(x, con, 'con');
 }
 
 var fopt : [1..p] real;
@@ -102,22 +97,22 @@ if (p==1) {
         c_ptrTo(par)
       );
     }
-    //break;
+
     var con_violQ : real;
     ft = 0;
     var alfa : real = n/(k+p);
     for i in 1..p {
-       var kco=i*ni;
-       var rhc=-0.5+(-1)**kco*kco;
-       var inext= i%p +1;
-       var gi=rhc+xopt[i][ni+1]-xopt[inext][2];
+       var kco = i * ni;
+       var rhc = -0.5 + (-1) ** kco * kco;
+       var inext = i % p + 1;
+       var gi = rhc + xopt[i][ni + 1] - xopt[inext][2];
        con_violQ += max(0,gi) ** 2;
-       ft+=fopt[i]+lamb[i]*rhc;
-       lamb[i]=max(0,lamb[i]+ alfa*gi);
+       ft += fopt[i] + lamb[i] * rhc;
+       lamb[i] = max(0, lamb[i] + alfa * gi);
     }
-    dist_x= sqrt(+ reduce (+ reduce (xopt - xprev)**2));
+    dist_x = sqrt(+ reduce (+ reduce (xopt - xprev)**2));
     var con_viol=sqrt(con_violQ);
-    writeln(k,' ', ft,' ',con_viol,' ',dist_x);
+    writeln(k, ' ', ft, ' ', con_viol, ' ', dist_x);
     xprev = xopt;
     k+=1;
   }

@@ -14,9 +14,9 @@ chmod 755 clear.sh
 ./clear.sh
 cd ..
 
-for n in 10
+for n in 100
 do
-    for threads in 2
+    for threads in 10
     do
         cd OpenMP
         ./openmp.out $n $threads
