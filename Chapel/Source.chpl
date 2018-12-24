@@ -1,5 +1,3 @@
-
-
 proc relu(array){
   var output = [i in array] if i < 0.0 then 0.0 else i;
   return output;
@@ -32,26 +30,26 @@ proc transpose(z){
 
 proc main() {
   var reader = open("../train.txt", iomode.r).reader();
+  var dnn = [5000, 783, 127, 63, 9];
   writeln("start..");
-  var y_train : [0..41999, 0..9] real;
-  var x_train : [0..41999, 0..783] real;
-  var line : [0..784] int;
+  var y_train : [0..dnn[1], 0..dnn[5]] real;
+  var x_train : [0..dnn[1], 0..dnn[2]] real;
+  var line : [0..dnn[2]+1] int;
   var k = 0;
   writeln("reading..");
 	while reader.read(line){
     var num = line[0];
-    var y : [0..9] real;
+    var y : [0..dnn[5]] real;
     y[num] = 1.0;
     y_train[k, ..] = y;
 
     var x = line[1..] / 255.0;
     x_train[k, ..] = x;
 
-    k += 1;
-    /* if (k == 42000){
+    if (k == dnn[1]){
       break;
-    } */
-    //writeln(k);
+    }
+    k += 1;
 	}
 
   reader.close();
@@ -59,9 +57,9 @@ proc main() {
   var BATCH_SIZE = 256;
   var lr = 0.01/BATCH_SIZE;
 
-  var W1 : [0..783, 0..127] real;
-  var W2 : [0..127, 0..63] real;
-  var W3 : [0..63, 0..9] real;
+  var W1 : [0..dnn[2], 0..dnn[3]] real;
+  var W2 : [0..dnn[3], 0..dnn[4]] real;
+  var W3 : [0..dnn[4], 0..dnn[5]] real;
 
   use Random;
   writeln('randomizing..');
@@ -79,13 +77,12 @@ proc main() {
   timer.start();
 
   fillRandom(rand_indx);
-  rand_indx = [indx in rand_indx] indx * (41999-BATCH_SIZE);
+  rand_indx = [indx in rand_indx] indx * (dnn[1]-BATCH_SIZE);
   writeln('learning..');
   for i in 0..3000 {
-    //writeln(i);
     var indx = rand_indx[i] : int;
-    var b_x = x_train[(0..BATCH_SIZE - 1) + indx, ..].reindex(0..BATCH_SIZE - 1, 0..783);
-    var b_y = y_train[(0..BATCH_SIZE - 1) + indx, ..].reindex(0..BATCH_SIZE - 1, 0..9);
+    var b_x = x_train[(0..BATCH_SIZE - 1) + indx, ..].reindex(0..BATCH_SIZE - 1, 0..dnn[2]);
+    var b_y = y_train[(0..BATCH_SIZE - 1) + indx, ..].reindex(0..BATCH_SIZE - 1, 0..dnn[5]);
 
 
     var a1 = relu(dot(b_x, W1));

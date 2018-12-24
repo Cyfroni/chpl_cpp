@@ -33,14 +33,14 @@ do
         for threads in 4
         do
 
-#            cd OpenMP
-#            ./openmp.out $file $CNN $threads
-#            cd ..
-
-            cd Chapel
-            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-            ./chpl.out #--file=$file
+            cd OpenMP
+            ./openmp.out $file $CNN $threads
             cd ..
+
+#            cd Chapel
+#            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+#            ./chpl.out #--file=$file
+#            cd ..
 
         done
     done

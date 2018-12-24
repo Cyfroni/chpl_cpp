@@ -17,8 +17,8 @@ int threads;
 float learingRatio = 1;
 int epoch = 500;
 
-vector<string> split(const string &str, const string &delim) {
-    vector<string> tokens;
+vector <string> split(const string &str, const string &delim) {
+    vector <string> tokens;
     size_t prev = 0, pos = 0;
     do {
         pos = str.find(delim, prev);
@@ -178,7 +178,7 @@ dot(const vector<float> &m1, const vector<float> &m2, const int m1_rows, const i
 }
 
 template<class T>
-void print(const vector<T> &m, int n_rows = 1) {
+void print(const vector <T> &m, int n_rows = 1) {
 
     /*  "Couts" the input vector as n_rows x n_columns matrix.
         Inputs:
@@ -269,7 +269,7 @@ float DNN(vector<float> &input, vector<float> &y, vector<int> &cnnSize) {
         results[categories * i + y[i]] = 1.;
     }
 
-    vector<vector<float>> W;
+    vector <vector<float>> W;
 
     for (int i = 0; i < cnnSize.size() - 1; ++i) {
         W.push_back(random_vector(cnnSize[i] * cnnSize[i + 1]));
@@ -281,7 +281,7 @@ float DNN(vector<float> &input, vector<float> &y, vector<int> &cnnSize) {
 
     const auto t1 = chrono::high_resolution_clock::now();
     for (unsigned i = 1; i <= epoch; ++i) {
-        vector<vector<float>> X = {input};
+        vector <vector<float>> X = {input};
 
         for (int j = 0; j < cnnSize.size() - 1; ++j) {
             int a_size = cnnSize[j];
@@ -302,7 +302,7 @@ float DNN(vector<float> &input, vector<float> &y, vector<int> &cnnSize) {
 
         vector<float> d_l = pred - results;
 
-        vector<vector<float>> dW(W.size());
+        vector <vector<float>> dW(W.size());
         vector<float> *d = &d_l;
 
         for (int j = cnnSize.size() - 2; j >= 0; --j) {
@@ -349,21 +349,21 @@ float DNN(vector<float> &input, vector<float> &y, vector<int> &cnnSize) {
 
 int main(int argc, char **arg) { // argv = [file, cnn, threads]
     fstream file, cnn;
-    string line;
-    string a = "../data.in";
-    string b = "../1.cnn";
-    string c = "2";
-    const char *aa = a.c_str();
-    const char *bb = b.c_str();
-    const char *cc = c.c_str();
-    const char *argv[4] = {aa, aa, bb, cc};
+//    string line;
+//    string a = "../data.in";
+//    string b = "../1.cnn";
+//    string c = "2";
+//    const char *aa = a.c_str();
+//    const char *bb = b.c_str();
+//    const char *cc = c.c_str();
+//    const char *argv[4] = {aa, aa, bb, cc};
 
     threads = stoi(argv[3]);
 
     file.open("../" + string(argv[1]), ios::in);
 
     getline(file, line);
-    vector<string> parameters = split(line, ",");
+    vector <string> parameters = split(line, ",");
     int dataAmount = stoi(parameters[0]);
     int dataLength = stoi(parameters[1]);
     int categories = stoi(parameters[2]);
@@ -373,7 +373,7 @@ int main(int argc, char **arg) { // argv = [file, cnn, threads]
 
     for (int i = 0; i < dataAmount; ++i) {
         getline(file, line);
-        vector<string> input = split(line, ",");
+        vector <string> input = split(line, ",");
         transform(input.begin(), input.begin() + 2, results.begin() + i, [](string &n) { return stof(n); });
         transform(input.begin() + 1, input.end(), data.begin() + i * (dataLength - 1),
                   [](string &n) { return stof(n); });
@@ -384,7 +384,7 @@ int main(int argc, char **arg) { // argv = [file, cnn, threads]
 
 
     getline(cnn, line);
-    vector<string> cnnParams = split(line, ",");
+    vector <string> cnnParams = split(line, ",");
 
     vector<int> cnnSize(cnnParams.size() + 2);
     cnnSize[0] = dataLength - 1;
