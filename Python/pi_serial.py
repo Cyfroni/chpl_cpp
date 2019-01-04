@@ -1,6 +1,6 @@
 import time
 
-num_steps = 10000000
+num_steps = 10 ** 7
 step = 1.0 / num_steps
 
 start = time.time()
@@ -12,5 +12,5 @@ for i in range(num_steps):
 pi = pi_sum * step
 
 end = time.time()
-print('time:\t', end - start)
-print('pi:\t\t', pi)
+print('time:\t\t', end - start)
+print('pi:\t\t\t', pi)
