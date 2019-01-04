@@ -2,7 +2,6 @@ package main
 
 import (
 	"math"
-	"sync"
 	"time"
 )
 
@@ -21,21 +20,17 @@ func partial_sum(part int) (pi_sum float64) {
 func main() {
 	start := time.Now()
 
-	res := make([]float64, threads)
+	res := make(chan float64)
 
-	var wg sync.WaitGroup
-	for i := range res {
-		wg.Add(1)
+	for i := 0; i < threads; i++ {
 		go func(i int) {
-			res[i] = partial_sum(i)
-			wg.Done()
+			res <- partial_sum(i)
 		}(i)
 	}
-	wg.Wait()
 
 	pi := 0.0
-	for _, result := range res {
-		pi += result
+	for i := 0; i < threads; i++ {
+		pi += <-res
 	}
 	pi *= step
 
