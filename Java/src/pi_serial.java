@@ -1,10 +1,9 @@
 public class pi_serial {
 
+    private static int num_steps = 1000000000;
+    private static double step = 1.0 / num_steps;
+
     public static void main(String[] args) {
-
-        int num_steps = 10000000;
-        double step = 1.0 / num_steps;
-
         long start = System.nanoTime();
 
         double pi_sum = 0.0;
@@ -16,7 +15,7 @@ public class pi_serial {
 
         long end = System.nanoTime();
 
-        System.out.println("time:\t" + (end - start)/1000000000.0);
-        System.out.println("pi:\t\t" + (pi));
+        System.out.println("time:\t\t" + (end - start)/1000000000.0);
+        System.out.println("pi:\t\t\t" + pi);
     }
 }
