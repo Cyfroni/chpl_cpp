@@ -1,9 +1,5 @@
-import time
-
-num_steps = 10 ** 7
+num_steps = 10 ** 9
 step = 1.0 / num_steps
-
-start = time.time()
 
 pi_sum = 0.0
 for i in range(num_steps):
@@ -11,6 +7,4 @@ for i in range(num_steps):
     pi_sum += 4 / (1 + x ** 2)
 pi = pi_sum * step
 
-end = time.time()
-print('time:\t\t', end - start)
-print('pi:\t\t\t', pi)
+print(pi)

@@ -1,7 +1,6 @@
-import time
 from multiprocessing import Pool
 
-num_steps = 10 ** 7
+num_steps = 10 ** 9
 step = 1.0 / num_steps
 threads = 4
 
@@ -15,13 +14,8 @@ def fun(part):
 
 
 if __name__ == '__main__':
-    start = time.time()
-
     with Pool(threads) as p:
         results = p.map(fun, range(threads))
     pi = sum(results) * step
 
-    end = time.time()
-    print('threads:\t', threads)
-    print('time:\t\t', end - start)
-    print('pi:\t\t\t', pi)
+    print(pi)
