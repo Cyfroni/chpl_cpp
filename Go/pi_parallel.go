@@ -1,30 +1,23 @@
 package main
 
-import (
-	"math"
-	"time"
-)
-
-const num_steps = 1000000000
-const step = 1.0 / float64(num_steps)
+const numSteps = 1000000000
+const step = 1.0 / float64(numSteps)
 const threads = 4
 
-func partial_sum(part int) (pi_sum float64) {
-	for i := part; i < num_steps; i += threads {
+func partialSum(part int) (piSum float64) {
+	for i := part; i < numSteps; i += threads {
 		x := (float64(i) + 0.5) * step
-		pi_sum += 4.0 / (1.0 + math.Pow(x, 2.0))
+		piSum += 4.0 / (1.0 + x*x)
 	}
 	return
 }
 
 func main() {
-	start := time.Now()
-
 	res := make(chan float64)
 
 	for i := 0; i < threads; i++ {
 		go func(i int) {
-			res <- partial_sum(i)
+			res <- partialSum(i)
 		}(i)
 	}
 
@@ -34,7 +27,5 @@ func main() {
 	}
 	pi *= step
 
-	println("threads:\t", threads)
-	println("time:\t\t", time.Since(start).Seconds())
-	println("pi:\t\t\t", pi)
+	println(pi)
 }
