@@ -10,13 +10,12 @@ public class pi_parallel {
         double pi_sum = 0.0;
         for (int i = part; i < num_steps; i += threads) {
             double x = (i + 0.5) * step;
-            pi_sum += 4 / (1 + Math.pow(x, 2));
+            pi_sum += 4 / (1 + x * x);
         }
         return pi_sum;
     }
 
     public static void main(String[] args) {
-        long start = System.nanoTime();
 
         double pi_sum = IntStream.range(0, threads).parallel()
                 .mapToDouble(pi_parallel::partial_sum)
@@ -24,10 +23,6 @@ public class pi_parallel {
 
         double pi = pi_sum * step;
 
-        long end = System.nanoTime();
-
-        System.out.println("threads:\t" + threads);
-        System.out.println("time:\t\t" + (end - start) / 1000000000.0);
-        System.out.println("pi:\t\t\t" + pi);
+        System.out.println(pi);
     }
 }
