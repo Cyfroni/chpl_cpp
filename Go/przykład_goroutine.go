@@ -5,7 +5,5 @@ func fun(word string) {
 }
 
 func main() {
-	go func() {
-		fun("world")
-	}()
+	go fun("world")
 }

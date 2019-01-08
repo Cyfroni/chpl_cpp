@@ -8,9 +8,7 @@ func main() {
 	c := make(chan int)
 
 	for i := 0; i < 8; i++ {
-		go func(i int) {
-			fun(c, i)
-		}(i)
+		go fun(c, i)
 	}
 
 	for i := 0; i < 8; i++ {
