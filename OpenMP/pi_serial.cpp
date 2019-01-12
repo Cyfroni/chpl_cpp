@@ -1,5 +1,7 @@
 #include <iostream>
 
+using namespace std;
+
 const long num_steps = 1000000000;
 const double step = 1.0 / (double) num_steps;
 

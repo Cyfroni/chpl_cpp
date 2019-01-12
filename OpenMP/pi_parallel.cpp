@@ -1,9 +1,11 @@
 #include <iostream>
 #include <omp.h>
 
+using namespace std;
+
 const long num_steps = 1000000000;
 const double step = 1.0 / (double) num_steps;
-const long threads = 4
+const long threads = 4;
 
 int main() {
 

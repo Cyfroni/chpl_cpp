@@ -1,6 +1,6 @@
 from multiprocessing import Pool
 
-num_steps = 10 ** 9
+num_steps = 10 ** 7
 step = 1.0 / num_steps
 threads = 4
 
