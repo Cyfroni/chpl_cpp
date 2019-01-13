@@ -1,4 +1,3 @@
-// g++ -std=c++11 Source.cpp -o openmp.out -fopenmp
 #include <vector>
 #include <array>
 #include <iostream>

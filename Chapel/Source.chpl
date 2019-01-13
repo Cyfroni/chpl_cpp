@@ -1,11 +1,5 @@
-// chpl Source.chpl -o chpl.out
-// ./chpl.out --n=500
-// ./chpl.out --c=true
-// ./chpl.out --a=2
 config const file = " ";
 config const alg = 0;
-config const c = false;
-config const a = 1;
 
 var _n : int;
 enum algoritm{
@@ -223,7 +217,7 @@ proc main() {
   reader.close();
 
   var table: [1.._n, 1.._n] (int, int);
-	
+
   var elapsedTime = routing_table(table, graph, alg);
 
 	var writer = open("time.txt", iomode.cw).writer();
