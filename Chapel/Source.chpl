@@ -60,14 +60,11 @@ proc generic(table, g, source){
 
 	var Q = new DistDeque(int);
 	var is: [1.._n] bool;
-	for i in is{
-  	i = false;
-	}
 	Q.pushBack(source);
 	is[source] = true;
 
 	while Q.getSize() != 0{
-		var (x, u) = Q.popBack();
+		var (_, u) = Q.popBack();
 		is[u] = false;
 		var v: int;
 		for j in g{
@@ -99,14 +96,11 @@ proc slf(table, g, source){
 
 	var Q = new DistDeque(int);
 	var is: [1.._n] bool;
-	for i in is{
-  	i = false;
-	}
 	Q.pushBack(source);
 	is[source] = true;
 
 	while Q.getSize() != 0{
-		var (x, u) = Q.popBack();
+		var (_, u) = Q.popBack();
 		is[u] = false;
 		var v: int;
 		for j in g {
@@ -123,9 +117,9 @@ proc slf(table, g, source){
 				if !is[v] {
 					if Q.getSize() == 0 then Q.pushBack(v);
 					else {
-						var (xx, uu) = Q.popBack();
-						Q.pushBack(uu);
-						if table[v][1] < uu then Q.pushFront(v);
+						(_, u) = Q.popBack();
+						Q.pushBack(u);
+						if table[v][1] < u then Q.pushFront(v);
 						else
 							Q.pushBack(v);
 						is[v] = true;
@@ -136,8 +130,7 @@ proc slf(table, g, source){
 	}
 }
 
-proc lll(table, g, source)
-{
+proc lll(table, g, source){
 	use DistributedDeque;
 
 	for i in table.domain{
@@ -147,19 +140,16 @@ proc lll(table, g, source)
 
 	var Q = new DistDeque(int);
 	var is: [1.._n] bool;
-	for i in is{
-  	i = false;
-	}
 	Q.pushBack(source);
 	is[source] = true;
-
 	var sum = 0;
+
 	while Q.getSize() != 0{
-		var (x, u) = Q.popBack();
+		var (_, u) = Q.popBack();
 		sum -= table[u][1];
 		is[u] = false;
-
 		var v  = 0 : int;
+
 		for j in g {
 			if u == j[1] then v = j[2];
 			else if u == j[2] then v = j[1];
@@ -174,19 +164,16 @@ proc lll(table, g, source)
 					Q.pushBack(v);
 					sum += table[v][1];
 					var avg = (sum * 1.01) / Q.getSize();
-					//
-					var (xx, uu) = Q.popFront();
-					Q.pushFront(uu);
-					v = uu;
+					(_, v) = Q.popFront();
+					Q.pushFront(v);
 					while table[v][1] > avg {
-						var (xy, vv) = Q.popFront();
+						Q.popFront();
 						Q.pushBack(v);
-						(xy, vv) = Q.popFront();
-						Q.pushFront(vv);
-						v = vv;
+						(_, v) = Q.popFront();
+						Q.pushFront(v);
 					}
 					is[v] = true;
-				}//
+				}
 			}
 		}
 	}
@@ -236,6 +223,7 @@ proc main() {
   reader.close();
 
   var table: [1.._n, 1.._n] (int, int);
+	
   var elapsedTime = routing_table(table, graph, alg);
 
 	var writer = open("time.txt", iomode.cw).writer();

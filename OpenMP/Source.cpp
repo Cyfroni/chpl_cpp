@@ -182,6 +182,7 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
         sum -= table[u1].first;
         is[u1] = false;
         int v;
+
         for (const auto &j : g) {
             if (u == j[0])
                 v = j[1];
@@ -229,12 +230,12 @@ routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm
     int num_threads, num_cores;
 
     const auto t1 = chrono::high_resolution_clock::now();
-#pragma omp parallel num_threads(threads)
+    #pragma omp parallel num_threads(threads)
     {
-#pragma omp for schedule(guided)
+        #pragma omp for schedule(guided)
         for (int i = 0; i < _n; i++)
             fun(table[i], graph, i);
-#pragma omp master
+        #pragma omp master
         {
             num_threads = omp_get_num_threads();
             num_cores = omp_get_num_procs();
@@ -269,25 +270,14 @@ int main(int argc, char **argv) // argv = [name, alg, threads]
     while (file_in >> a >> b >> c) {
         graph.emplace_back(array < int, 3 > {a, b, c});
     }
-
     file_in.close();
 
     cube table(K, matrix(_n, vec(_n)));
-
     int alg = argv[2][0] - 48;
     int threads = argv[3][0] - 48;
 
-    if (alg == 0) {
-        for (int i = 0; i < K; ++i)
-            routing_table(table[i], graph, algoritm(i + 1), 8);
-
-        if (check(table))
-            cout << "OK\n";
-        else cout << "DIFFERENT\n";
-
-    }
-
     auto result = routing_table(table[0], graph, algoritm(alg), threads);
+
     ofstream file_out("time.txt", fstream::out);
     file_out << get<0>(result);
     file_out.close();
