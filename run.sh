@@ -30,17 +30,17 @@ for file in 1 #$args
 do
     for CNN in 1 #$cnn
     do
-        for threads in 4
+        for threads in 2 1
         do
 
             cd OpenMP
-            ./openmp.out #$file $CNN $threads
+            ./openmp.out $threads #$file $CNN $threads
             cd ..
 
-#            cd Chapel
-#            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-#            ./chpl.out #--file=$file
-#            cd ..
+            cd Chapel
+            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+            ./chpl.out #--file=$file
+            cd ..
 
         done
     done

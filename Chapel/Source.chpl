@@ -31,7 +31,7 @@ proc transpose(z){
 proc main() {
   var reader = open("../train.txt", iomode.r).reader();
   var dnn = [5000, 783, 127, 63, 9];
-  writeln("start..");
+  writeln("<Chapel>\n\n");
   var y_train : [0..dnn[1], 0..dnn[5]] real;
   var x_train : [0..dnn[1], 0..dnn[2]] real;
   var line : [0..dnn[2]+1] int;
@@ -79,10 +79,10 @@ proc main() {
   fillRandom(rand_indx);
   rand_indx = [indx in rand_indx] indx * (dnn[1]-BATCH_SIZE);
   writeln('learning..');
-  for i in 0..3000 {
+  for i in 1..100 {
     var indx = rand_indx[i] : int;
-    var b_x = x_train[(0..BATCH_SIZE - 1) + indx, ..]//.reindex(0..BATCH_SIZE - 1, 0..dnn[2]);
-    var b_y = y_train[(0..BATCH_SIZE - 1) + indx, ..]//.reindex(0..BATCH_SIZE - 1, 0..dnn[5]);
+    var b_x = x_train[(0..BATCH_SIZE - 1) + indx, ..];//.reindex(0..BATCH_SIZE - 1, 0..dnn[2]);
+    var b_y = y_train[(0..BATCH_SIZE - 1) + indx, ..];//.reindex(0..BATCH_SIZE - 1, 0..dnn[5]);
 
 
     var a1 = relu(dot(b_x, W1));
@@ -103,9 +103,9 @@ proc main() {
     if (i % 100 == 0){
         writeln("-----------------------------------------------Epoch ", i, "--------------------------------------------------");
         writeln("Predictions:");
-        writeln(yhat[0..9, ..]);
+        writeln(yhat[(0..9) + indx, ..]);
         writeln("Ground truth:");
-        writeln(b_y[0..9, ..]);
+        writeln(b_y[(0..9) + indx, ..]);
         var loss_m = yhat - b_y;
         var loss = + reduce [j in loss_m] j**2;
         writeln("                                            Loss ", loss/BATCH_SIZE);
@@ -113,4 +113,5 @@ proc main() {
         writeln("--------------------------------------------End of Epoch :(------------------------------------------------");
     }
   }
+  writeln("time: ", timer.elapsed());
 }

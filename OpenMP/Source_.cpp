@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const int threads = 1;
+int threads = 1;
 
 void print(const vector<float> &m, int n_rows, int n_columns) {
 
@@ -227,6 +227,9 @@ int main(int argc, const char *argv[]) {
     string line;
     vector <string> line_v;
 
+    threads = argv[1][0] - 48;
+
+    cout << "<OpenMP>\n\n";
     cout << "Loading data ...\n";
     vector<float> X_train;
     vector<float> y_train;
@@ -266,7 +269,7 @@ int main(int argc, const char *argv[]) {
 
     const auto t1 = chrono::high_resolution_clock::now();
     cout << "Training the model ...\n";
-    for (unsigned i = 0; i < 10000; ++i) {
+    for (unsigned i = 0; i < 100; ++i) {
 
         // Building batches of input variables (X) and labels (y)
         int randindx = rand() % (42000 - BATCH_SIZE);
@@ -320,7 +323,7 @@ int main(int argc, const char *argv[]) {
     const auto t2 = chrono::high_resolution_clock::now();
     chrono::duration<double, std::milli> fp_ms = t2 - t1;
 
-    cout << "time(" + threads << "): " << fp_ms.count() / 1000.0 << " s\n";
+    cout << "time(" << threads << "): " << fp_ms.count() / 1000.0 << " s\n";
 
     return 0;
 }
