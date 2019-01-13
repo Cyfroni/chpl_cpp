@@ -47,7 +47,7 @@ do
 
         mkdir -p ${pathForNodes}
 
-        for threads in 4 3 2 1
+        for threads in 4 2 1
         do
             errorMessage=''
 
