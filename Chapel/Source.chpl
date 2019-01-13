@@ -111,9 +111,9 @@ proc slf(table, g, source){
 				if !is[v] {
 					if Q.getSize() == 0 then Q.pushBack(v);
 					else {
-						(_, u) = Q.popBack();
-						Q.pushBack(u);
-						if table[v][1] < u then Q.pushFront(v);
+						var (_, x) = Q.popBack();
+						Q.pushBack(x);
+						if table[v][1] < x then Q.pushFront(v);
 						else
 							Q.pushBack(v);
 						is[v] = true;
