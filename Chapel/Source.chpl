@@ -8,8 +8,11 @@ extern proc donlp2_wrapper(args...) : c_int;
 param bigN = 1e20;
 param epsilon = 1e-6;
 
-param n = 100;
-param p = 10;
+//200 400
+//20 10 5 2 1
+
+param n = 400;
+param p = 1;
 param ni = n/p;
 type c_vec = (ni+1)*real;
 type chpl_array = [1..ni] real;
@@ -65,7 +68,7 @@ var fopt : [1..p] real;
 var lamopt : chpl_matrix;
 var ft : real;
 
-writeln("<Chapel>\nSolving Powell20 problem for: n = ", n,', p = ', p, ' ...');
+writeln("<Chapel>\nSolving Powell20 problem for: n = ", n,', p = ', p, '...');
 
 use Time;
 var timer : Timer;
@@ -112,26 +115,17 @@ if (p==1) {
     }
     dist_x = sqrt(+ reduce (+ reduce (xopt - xprev)**2));
     var con_viol=sqrt(con_violQ);
-    writeln(k, ' ', ft, ' ', con_viol, ' ', dist_x);
+    //writeln(k, ' ', ft, ' ', con_viol, ' ', dist_x);
     xprev = xopt;
     k+=1;
   }
 }
 
-/* var result : 1..0 int;
-
-for array in xopt{
-
-  result.append()
-} */
-
-
-
-writeln('Powell - ', n);
+/* writeln('Powell - ', n);
 writeln('-----------------------------------');
 writeln('xopt =\n', xopt);
 writeln('-----------------------------------');
-writeln('fopt = ', ft);
+writeln('fopt = ', ft); */
 writeln('-----------------------------------');
 writeln('Time od calculations: ', timer.elapsed(), ' s');
 writeln('-----------------------------------');
