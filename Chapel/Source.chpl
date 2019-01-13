@@ -45,20 +45,19 @@ proc bellman_ford(table, g, source){
 }
 
 proc generic(table, g, source){
-	use DistributedDeque;
 
 	for i in table.domain{
 		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
-	var Q = new DistDeque(int);
+	var Q = [source];
 	var is: [1.._n] bool;
-	Q.pushBack(source);
 	is[source] = true;
 
-	while Q.getSize() != 0{
-		var (_, u) = Q.popBack();
+	 while !Q.isEmpty(){
+
+		var u = Q.pop_back();
 		is[u] = false;
 		var v: int;
 		for j in g{
@@ -72,7 +71,43 @@ proc generic(table, g, source){
 				table[v][1] = table[u][1] + w;
 				table[v][2] = u;
 				if !is[v]{
-					Q.pushBack(v);
+					Q.push_back(v);
+					is[v] = true;
+				}
+			}
+		}
+	}
+}
+
+proc generic2(table, g, source){
+	use List;
+
+	for i in table.domain{
+		table[i] = (1 << 30, -1);
+	}
+	table[source][1] = 0;
+
+	var Q = makeList(source);
+	var is: [1.._n] bool;
+	is[source] = true;
+
+	 while Q.size != 0{
+
+		var u = Q.pop_front();
+		is[u] = false;
+		var v: int;
+		for j in g{
+			if u == j[1] then v = j[2];
+			else if u == j[2] then v = j[1];
+			else
+				continue;
+
+			var w = j[3];
+			if table[u][1] + w < table[v][1]{
+				table[v][1] = table[u][1] + w;
+				table[v][2] = u;
+				if !is[v]{
+					Q.push_front(v);
 					is[v] = true;
 				}
 			}
@@ -81,20 +116,18 @@ proc generic(table, g, source){
 }
 
 proc slf(table, g, source){
-	use DistributedDeque;
 
 	for i in table.domain{
 		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
-	var Q = new DistDeque(int);
+	var Q = [source];
 	var is: [1.._n] bool;
-	Q.pushBack(source);
 	is[source] = true;
 
-	while Q.getSize() != 0{
-		var (_, u) = Q.popBack();
+	while !Q.isEmpty() {
+		var u = Q.pop_back();
 		is[u] = false;
 		var v: int;
 		for j in g {
@@ -109,15 +142,13 @@ proc slf(table, g, source){
 				table[v][1] = table[u][1] + w;
 				table[v][2] = u;
 				if !is[v] {
-					if Q.getSize() == 0 then Q.pushBack(v);
-					else {
-						var (_, x) = Q.popBack();
-						Q.pushBack(x);
-						if table[v][1] < x then Q.pushFront(v);
-						else
-							Q.pushBack(v);
+						if !Q.isEmpty() && table[v][1] < Q.back() {
+								Q.push_front(v);
+						}
+						else {
+								Q.push_back(v);
+						}
 						is[v] = true;
-					}
 				}
 			}
 		}
@@ -125,21 +156,19 @@ proc slf(table, g, source){
 }
 
 proc lll(table, g, source){
-	use DistributedDeque;
 
 	for i in table.domain{
 		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
-	var Q = new DistDeque(int);
+	var Q = [source];
 	var is: [1.._n] bool;
-	Q.pushBack(source);
 	is[source] = true;
 	var sum = 0;
 
-	while Q.getSize() != 0{
-		var (_, u) = Q.popBack();
+	while !Q.isEmpty(){
+		var u = Q.pop_back();
 		sum -= table[u][1];
 		is[u] = false;
 		var v  = 0 : int;
@@ -155,16 +184,14 @@ proc lll(table, g, source){
 				table[v][1] = table[u][1] + w;
 				table[v][2] = u;
 				if !is[v] {
-					Q.pushBack(v);
+					Q.push_back(v);
 					sum += table[v][1];
-					var avg = (sum * 1.01) / Q.getSize();
-					(_, v) = Q.popFront();
-					Q.pushFront(v);
+					var avg = (sum * 1.01) / Q.size;
+					v = Q.front();
 					while table[v][1] > avg {
-						Q.popFront();
-						Q.pushBack(v);
-						(_, v) = Q.popFront();
-						Q.pushFront(v);
+						Q.pop_front();
+						Q.push_back(v);
+						v = Q.front();
 					}
 					is[v] = true;
 				}
