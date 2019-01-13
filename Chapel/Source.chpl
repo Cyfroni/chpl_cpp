@@ -2,8 +2,6 @@
 // ./chpl.out --n=500
 // ./chpl.out --c=true
 // ./chpl.out --a=2
-//config const threads = 8;
-/* export CHPL_TASKS=fifo; */
 config const file = " ";
 config const alg = 0;
 config const c = false;
@@ -14,8 +12,7 @@ enum algoritm{
 	Belman_ford = 1,
 	Generic,
 	SLF,
-	LLL,
-	Auction
+	LLL
 };
 
 proc write_to_file_raw(table){
@@ -30,7 +27,7 @@ proc write_to_file_raw(table){
 
 proc bellman_ford(table, g, source){
 	for i in table.domain{
-		table[i] = (1 << 30, "-");
+		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
@@ -42,12 +39,12 @@ proc bellman_ford(table, g, source){
 			if (table[u][1] + w < table[v][1])
 			{
 				table[v][1] = table[u][1] + w;
-				table[v][2] = u : string; // + "-";
+				table[v][2] = u;
 			}
 			if (table[v][1] + w < table[u][1])
 			{
 				table[u][1] = table[v][1] + w;
-				table[u][2] = v : string; // + "-";
+				table[u][2] = v;
 			}
 		}
 	}
@@ -57,7 +54,7 @@ proc generic(table, g, source){
 	use DistributedDeque;
 
 	for i in table.domain{
-		table[i] = (1 << 30, "-");
+		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
@@ -74,7 +71,6 @@ proc generic(table, g, source){
 		is[u] = false;
 		var v: int;
 		for j in g{
-			//writeln(j);
 			if u == j[1] then v = j[2];
 			else if u == j[2] then v = j[1];
 			else
@@ -83,7 +79,7 @@ proc generic(table, g, source){
 			var w = j[3];
 			if table[u][1] + w < table[v][1]{
 				table[v][1] = table[u][1] + w;
-				table[v][2] = u : string; // +"-";
+				table[v][2] = u;
 				if !is[v]{
 					Q.pushBack(v);
 					is[v] = true;
@@ -97,7 +93,7 @@ proc slf(table, g, source){
 	use DistributedDeque;
 
 	for i in table.domain{
-		table[i] = (1 << 30, "-");
+		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
@@ -123,7 +119,7 @@ proc slf(table, g, source){
 			if table[u][1] + w < table[v][1]
 			{
 				table[v][1] = table[u][1] + w;
-				table[v][2] = u : string; // + "-";
+				table[v][2] = u;
 				if !is[v] {
 					if Q.getSize() == 0 then Q.pushBack(v);
 					else {
@@ -145,7 +141,7 @@ proc lll(table, g, source)
 	use DistributedDeque;
 
 	for i in table.domain{
-		table[i] = (1 << 30, "-");
+		table[i] = (1 << 30, -1);
 	}
 	table[source][1] = 0;
 
@@ -173,7 +169,7 @@ proc lll(table, g, source)
 			var w = j[3];
 			if table[u][1] + w < table[v][1] {
 				table[v][1] = table[u][1] + w;
-				table[v][2] = u : string; // +"-";
+				table[v][2] = u;
 				if !is[v] {
 					Q.pushBack(v);
 					sum += table[v][1];
@@ -198,14 +194,7 @@ proc lll(table, g, source)
 
 proc routing_table(table, graph, al)
 {
-	if al == 0{
-		for i in 1..4{
-			routing_table(table,graph,i);
-		}
-		return -1;
-	}
 
-	//writeln(al : algoritm, ":");
 	use Time;
 	const startTime = getCurrentTime();
 
@@ -232,29 +221,8 @@ proc routing_table(table, graph, al)
 
 	const stopTime = getCurrentTime();
 	const elapsedTime = stopTime - startTime;
-	//writeln("Elapsed time was: ", elapsedTime,"\n");
 	return elapsedTime;
-  /*writeln(alg);
-	use Time;
-	select alg {
-    when 1 {
-			const startTime = getCurrentTime();
-		  forall i in 1.._n {
-		    bellman_ford(table[i, ..], graph, i);
-		  }
-			const stopTime = getCurrentTime();
-			writeln("Elapsed time was: ", stopTime - startTime);
-		}
-		when 2 {
-			const startTime = getCurrentTime();
-		  forall i in 1.._n {
-		    generic(table[i, ..], graph, i);
-		  }
-			const stopTime = getCurrentTime();
-			writeln("Elapsed time was: ", stopTime - startTime);
-		}
-    otherwise return;
-  }*/
+
 }
 
 proc main() {
@@ -267,7 +235,7 @@ proc main() {
 	}
   reader.close();
 
-  var table: [1.._n, 1.._n] (int, string);
+  var table: [1.._n, 1.._n] (int, int);
   var elapsedTime = routing_table(table, graph, alg);
 
 	var writer = open("time.txt", iomode.cw).writer();
@@ -275,24 +243,4 @@ proc main() {
 
 	write_to_file_raw(table);
 
-  /* var cond = true;
-  var inp : int;
-  if c {
-		while cond{
-			writeln("0 - graph");
-    	writeln("x - node");
-    	inp = read(int);
-			if inp == 0{
-				for (a,b,c) in graph{
-					writeln(a," ",b," ",c);
-				}
-			}
-    	else if inp > 0 && inp <= _n {
-				writeln(table[inp, ..]);
-			}
-			else {
-				cond = false;
-			}
-  	}
-	} */
 }

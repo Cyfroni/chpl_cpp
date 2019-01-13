@@ -36,18 +36,15 @@ string st(const algoritm alg) {
             return "SLF";
         case 4:
             return "LLL";
-        case 5:
-            return "Auction";
     }
 }
 
-void write_to_file_raw(matrix &table){
+void write_to_file_raw(matrix &table) {
     ofstream file_out;
-    for(int i=0;i<_n;++i){
+    for (int i = 0; i < _n; ++i) {
         file_out.open(to_string(i + 1) + ".node", fstream::out);
-        for(int j=0;j<_n;++j){
+        for (int j = 0; j < _n; ++j) {
             file_out << j + 1 << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
-            // file_out << j << ":" << table[i][j].second << endl;
         }
         file_out.close();
     }
@@ -65,8 +62,8 @@ void print(vec &g) {
         printf("%4d : %6d    %d\n", i + 1, g[i].first, g[i].second);
 }
 
-// https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
 void bellman_ford(vec &table, const vector <array<int, 3>> &g, const int source) {
+
     for (auto i = 0; i < _n; ++i)
         table[i] = make_pair(INT_MAX / 2, -1);
 
@@ -89,12 +86,11 @@ void bellman_ford(vec &table, const vector <array<int, 3>> &g, const int source)
     }
 }
 
-// https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm
 void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
-    //auto table = new vector<pair<int, string>>;
 
     for (auto i = 0; i < _n; ++i)
         table[i] = make_pair(INT_MAX / 2, -1);
+
     table[source].first = 0;
     vector<int> Q;
     vector<bool> is(_n, false);
@@ -112,7 +108,6 @@ void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
             else if (u == j[1])
                 v = j[0];
             else continue;
-
             const auto u1 = u - 1;
             const auto v1 = v - 1;
             const auto w = j[2];
@@ -129,10 +124,10 @@ void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
 }
 
 void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
-    //auto table = new vector<pair<int, string>>;
 
     for (auto i = 0; i < _n; ++i)
         table[i] = make_pair(INT_MAX / 2, -1);
+
     table[source].first = 0;
     deque<int> Q;
     vector<bool> is(_n, false);
@@ -150,13 +145,12 @@ void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
             else if (u == j[1])
                 v = j[0];
             else continue;
-
             const auto u1 = u - 1;
             const auto v1 = v - 1;
             const auto w = j[2];
             if (table[u1].first + w < table[v1].first) {
                 table[v1].first = table[u1].first + w;
-                table[v1].second = to_string(u);
+                table[v1].second = u;
                 if (!is[v1]) {
                     if (!Q.empty() && table[v1].first < Q.back())
                         Q.push_front(v);
@@ -173,20 +167,20 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
 
     for (auto i = 0; i < _n; ++i)
         table[i] = make_pair(INT_MAX / 2, -1);
+
     table[source].first = 0;
     deque<int> Q;
     vector<bool> is(_n, false);
     Q.push_back(source + 1);
     is[source] = true;
     int sum = 0;
+
     while (!Q.empty()) {
         const auto u = Q.back();
         const auto u1 = u - 1;
         Q.pop_back();
         sum -= table[u1].first;
         is[u1] = false;
-
-
         int v;
         for (const auto &j : g) {
             if (u == j[0])
@@ -198,12 +192,11 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
             const auto w = j[2];
             if (table[u1].first + w < table[v1].first) {
                 table[v1].first = table[u1].first + w;
-                table[v1].second = to_string(u);
+                table[v1].second = u;
                 if (!is[v1]) {
                     Q.push_back(v);
                     sum += table[v1].first;
                     const double avg = (sum * 1.01) / Q.size();
-
                     v = Q.front();
                     while (table[v - 1].first > avg) {
                         Q.pop_front();
@@ -217,8 +210,8 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
     }
 }
 
-tuple<double, int, int> routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm alg, int threads) {
-    //const auto tab = new vector< vector<pair<int, string>>* >(n);
+tuple<double, int, int>
+routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm alg, int threads) {
     decltype(bellman_ford) *fun;
 
     if (alg == Belman_ford)
@@ -249,10 +242,6 @@ tuple<double, int, int> routing_table(matrix &table, const vector <array<int, 3>
     }
     const auto t2 = chrono::high_resolution_clock::now();
     chrono::duration<double, std::milli> fp_ms = t2 - t1;
-//    cout << "algoritm: " << st(alg) << endl
-//         << "time: " << fp_ms.count() / 1000.0 << " s\n"
-//         << "threads: " << num_threads << endl
-//         << "cores: " << num_cores << "\n\n";
 
     return make_tuple(fp_ms.count() / 1000.0, num_cores, num_threads);
 }
@@ -299,31 +288,11 @@ int main(int argc, char **argv) // argv = [name, alg, threads]
     }
 
     auto result = routing_table(table[0], graph, algoritm(alg), threads);
-
-    //cout<< get<0>(result) << " " << st(algoritm(alg)) << " " << get<2>(result) << endl;
-
     ofstream file_out("time.txt", fstream::out);
-
-    file_out << get<0>(result);// << ","<< get<1>(result)<<"," << get<2>(result) << endl;
-
+    file_out << get<0>(result);
     file_out.close();
 
-
     write_to_file_raw(table[0]);
-
-//    while (argc == 4) {
-//        int node;
-//        cout << "0: print graph\n"
-//             << "x: print x Node\n";
-//        cin >> node;
-//
-//        if (node == 0)
-//            print(graph);
-//        else if (node < 0 || node > _n)
-//            break;
-//        else
-//            print(table[0][node - 1]);
-//    }
 
     return 0;
 }
