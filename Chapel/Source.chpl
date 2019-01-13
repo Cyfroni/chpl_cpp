@@ -118,6 +118,14 @@ if (p==1) {
   }
 }
 
+/* var result : 1..0 int;
+
+for array in xopt{
+
+  result.append()
+} */
+
+
 
 writeln('Powell - ', n);
 writeln('-----------------------------------');

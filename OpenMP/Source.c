@@ -1,127 +1,3 @@
-/******************************************************************************/
-/*            powell20_ppm.c  program                                         */
-/******************************************************************************/
-/*
-*  GENERAL DESCRIPTION
-*
-*  The example program that makes use of DONLP2 wrapper
-*  (written by Marek Szyprowski from Warsaw University of Technology; DONLP2
-*  solver itself was written by Peter Spellucci from Darmstadt University
-*  of Technology) in a multicore environment. The concurrent threads
-*  are created with  the help of OpenMP parallelizing directives.
-*  The program solves the Powell20 problem (from the CUTE set) for the
-*  dimension and the number of threads specified in the command line.
-*  It implements the decomposition of the dual problem (price method,
-*  Lagrange relaxation; "ppm" in the name is from "parallel price method").
-*
-*  THE PROBLEM SOLVED  - Powell20
-*
-*    min_{y \in R^n} 0.5*( y[1]^2+y[2]^2+....+y[n]^2 )
-*
-*       subject to
-*                 y[k+1]-y[k] >= -0.5+(-1)^k*k;          k =1,...,n-1
-*                  y[1]-y[n] >= n-0.5;
-*
-*  THE ALGORITHM (THE DECOMPOSITION IDEA)
-*
-*      We divide vector  y \in R^n into p equal parts  (assuming that p is a
-*  divisor of an even n) and denote:
-*         x[i][j]=y[(i-1)*ni+j)], i=1,...,p; j=1,...,ni,
-*         x[i]=[ x[i][1], x[i][2], ... x[i][ni] ]'
-*         x = [ x[1]',x[2]',..., x[p]' ]' (=y)
-*  where ni=n/p.
-*  Now we may divide all n constraints into p+1 groups: constraints
-*  dependent only on x[i] subvector for every i=1,...,p:
-*     y[k+1]-y[k] >= -0.5+(-1)^k*k,     k=(i-1)*ni+j, j=1,...,ni-1
-*  that is:
-*     x[i][j+1]-x[i][j] >= -0.5 +(-1)^k(i,j)*k(i,j),  j=1,...,ni-1
-*  where k(i,j)= (i-1)*ni+j, defining some sets X[i] \subset R^{ni},
-*  and p constraints involving x[i][j] from different subvectors - x[i]
-*  and x[i+1]:
-*     y[k+1]-y[k] >= -0.5+(-1)^k*k,       k=i*ni, i=1,...,p-1
-*     y[1] - y[n] >= n-0.5
-*  The latter constraints with the above assumptions on n and p may be
-*  written as:
-*     x[mod(i,p)+1][1]-x[i][ni] >= c(i), i=1,...,p
-*  where c(i)=-0.5 +(-1)^(i*ni)*(i*ni)
-*
-*  The dual problem will be now:
-
-*      max_{lambda >=0) min_{x[i] \in X[i], i=1,...p} { L(x,lambda) =
-*         =\sum_{i=1}^p \sum_{j=1}^{ni} 0.5* x[i][j]^2 +
-*         + \sum_{i=1}^p \lambda[i]*( c(i) + x[i][ni] - x[mod(i,p)+1][1]) =
-*         = \sum_{i=1}^p ( \sum_{j=1}^{ni} 0.5* x[i][j]^2 +
-*        +  lambda[i]*x[i][ni] - lambda[mod(p-2+i,p)+1]*x[i][1] ) +c(i)}
-*
-*   The inner optimization decomposes into p local problems:
-*      min_{x[i] \in X[i]}   \sum_{j=1}^{ni} 0.5* x[i][j]^2 +
-*             +  lambda[i]*x[i][ni] - lambda[mod(p-2+i,p)+1]*x[i][1]
-*   which may be solved independently, if possible, in parallel.
-*   The external - dual - problem (called coordination problem) may be
-*   solved  in the simplest case by the steepest ascent gradient algorithm:
-*      lambda[i] := lambda[i]+ alfa*(c(i)+xopt[i][ni]-xopt[mod(i,p)+1][1])
-*                                        for i=1,2,...,p
-*   where alfa is a suitably chosen step coefficient.
-*
-*  PARALLELIZATION  TECHNOLOGY
-*
-*  Actually, the whole parallelization is obtained by only one additional
-*  line:
-*              #pragma omp parallel for
-*  Three calls of  functions from OpenMP library and the directive
-*  #include <omp.h> have supplementary character.
-*
-*  SOURCE MODULES USED
-*         donlp2_wrapper.c
-*         donlp2_wrapper.h
-*         donlp2_priv.h
-*         donlp2_pub.h
-*         donlp2.c
-*
-*  COMPILATION
-*
-*   Under SOLARIS:
-*  $ cc powell20_ppm.c donlp2_wrapper.c donlp2.c -lm -xopenmp -xO3 -o powell
-*
-*   Under LINUX (for gcc compiler versions higher than 4.2; for some
-*                distributions 4.1.1):
-*  $ gcc powell20_ppm.c donlp2_wrapper.c donlp2.c -lm -fopenmp -o powell
-*
-*   Under MS VISUAL STUDIO 2005/2008 C/C++(Professional and Team System
-*                           Editions)  in Project Properties
-*     (the entrance e.g. by right-click on the Project),
-*     then Properties\Configuration Properties\...
-*                                     ...C/C++\Language\OpenMP Support
-*     set "Yes"
-*
-*   RUNNING THE PROGRAM
-*
-*        SOLARIS, LINUX:
-
-*           $ ./powell n p
-*             where: n - dimension of the problem,
-*                    p - number of local subproblems (threads)
-*             e.g.
-*               $ ./powell 100 4
-*
-*        WINDOWS 2000/XP/Vista
-
-*         In the Command Prompt Window:
-*           C:\> <name_of_executable_file> n p
-*
-*  AUTHOR:
-*
-*    Andrzej Karbowski
-*  Institute of Control and Computation Engineering
-*  Department of Electronics and Information Technology
-*  Warsaw University of Technology
-*      E-mail: A.Karbowski@ia.pw.edu.pl
-*
-*  DATE OF RELEASE
-*
-*     4 August 2007                                                           */
-/******************************************************************************/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -158,7 +34,6 @@ void local_prob_init(double x[], double low[], double hi[], void *param_) {
     int ni = param->ni;
     int j, jabs;
 
-    /* initial value of vector x */
     if (k == 1)
         for (j = 1; j <= ni; j++) {
             jabs = (i - 1) * ni + j;
@@ -171,12 +46,7 @@ void local_prob_init(double x[], double low[], double hi[], void *param_) {
         for (j = 1; j <= ni; j++)
             x[j] = xopt[i][j];
 
-    /* boundaries for vector x */
     for (j = 1; j <= ni; j++) {
-        /* there are no boundaries for elements of vector x in Powell20 problem,
-           but setting the boundaries is required by the solver itself,
-           so, as the boundaries really big positive and negative
-           numbers are used */
         low[j] = -bigN;
         hi[j] = bigN;
     }
@@ -247,9 +117,9 @@ int main(int argc, char **argv) {
     double dist_x, con_violQ, con_viol;
     double gi, rhc, ft, lami;
     double t0, tf;
-#define epsilon 1.e-6     /* the accuracy of approximation of the
+    #define epsilon 1.e-6     /* the accuracy of approximation of the
                                 optimal solution in x space */
-#define max(x, y) (  (x  >=  y)  ?  x  :  y  )
+    #define max(x, y) (  (x  >=  y)  ?  x  :  y  )
 
     n = atoi(argv[1]);
     p = atoi(argv[2]);
@@ -301,10 +171,9 @@ int main(int argc, char **argv) {
         dist_x = 1.;
         omp_set_num_threads(p);
         while (dist_x > epsilon) {
-#pragma omp parallel for
 
             /* the p independent calls of local problems  */
-
+            #pragma omp parallel for num_threads(p)
             for (i = 1; i <= p; i++) {
                 struct my_param par;
                 par.i = i;
@@ -312,10 +181,6 @@ int main(int argc, char **argv) {
                 donlp2_wrapper(nv, nc, &fopt[i], xopt[i], lamopt[i],
                                local_prob_init, local_fun, local_con, &par);
             }
-            //break;
-            /* the coordination - change of Lagrange multipliers (prices for the
-               violation of constraints) due to a steepest ascent gradient
-               algorithm,  so as to maximize the value of the dual function ft */
 
             con_violQ = 0.;
             ft = 0.;
