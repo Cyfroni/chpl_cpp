@@ -81,8 +81,8 @@ proc main() {
   writeln('learning..');
   for i in 0..3000 {
     var indx = rand_indx[i] : int;
-    var b_x = x_train[(0..BATCH_SIZE - 1) + indx, ..].reindex(0..BATCH_SIZE - 1, 0..dnn[2]);
-    var b_y = y_train[(0..BATCH_SIZE - 1) + indx, ..].reindex(0..BATCH_SIZE - 1, 0..dnn[5]);
+    var b_x = x_train[(0..BATCH_SIZE - 1) + indx, ..]//.reindex(0..BATCH_SIZE - 1, 0..dnn[2]);
+    var b_y = y_train[(0..BATCH_SIZE - 1) + indx, ..]//.reindex(0..BATCH_SIZE - 1, 0..dnn[5]);
 
 
     var a1 = relu(dot(b_x, W1));

@@ -2,9 +2,9 @@
 
 #source chapel-1.18.0/util/setchplenv.bash
 
-cd Tools
-python prepare.py
-cd ..
+#cd Tools
+#python prepare.py
+#cd ..
 
 args="*.data"
 cnn="*.cnn"
@@ -23,18 +23,18 @@ chmod 755 clear.sh
 ./clear.sh
 cd ..
 
-rm -rf results/
-mkdir results
+#rm -rf results/
+#mkdir results
 
-for file in $args
+for file in 1 #$args
 do
-    for CNN in $cnn
+    for CNN in 1 #$cnn
     do
         for threads in 4
         do
 
             cd OpenMP
-            ./openmp.out $file $CNN $threads
+            ./openmp.out #$file $CNN $threads
             cd ..
 
 #            cd Chapel

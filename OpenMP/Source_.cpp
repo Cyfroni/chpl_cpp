@@ -196,9 +196,9 @@ dot(const vector<float> &m1, const vector<float> &m2, const int m1_rows, const i
     vector<float> output(m1_rows * m2_columns);
 
 
-#pragma omp parallel num_threads(threads)
+    #pragma omp parallel num_threads(threads)
     {
-#pragma omp for schedule(guided)
+        #pragma omp for schedule(guided)
         for (int row = 0; row < m1_rows; ++row) {
             for (int col = 0; col < m2_columns; ++col) {
                 output[row * m2_columns + col] = 0.f;
