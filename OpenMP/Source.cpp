@@ -12,13 +12,10 @@
 
 using namespace std;
 
-
-constexpr auto predecessor = true;
-//constexpr auto N = 500;
 constexpr auto K = 4;
 unsigned int _n = 0;
 
-typedef vector <pair<int, string>> vec;
+typedef vector <pair<int, int>> vec;
 typedef vector <vec> matrix;
 typedef vector <matrix> cube;
 
@@ -26,8 +23,7 @@ enum algoritm {
     Belman_ford = 1,
     Generic,
     SLF,
-    LLL,
-    Auction
+    LLL
 };
 
 string st(const algoritm alg) {
@@ -57,36 +53,22 @@ void write_to_file_raw(matrix &table){
     }
 }
 
-void write_to_file(matrix &table){
-//    int n = table.size();
-//    ofstream file_out;
-//    for(int i=0;i<n;++i){
-//        file_out.open(to_string(i) + ".txt", fstream::out);
-//        for(int j=0;j<n;++j){
-//            file_out << j << ":" << table[i][j].second << "(" << table[i][j].first << ")\n";
-//        }
-//    file_out.close();
-//    }
-}
-
 void print(const vector <array<int, 3>> &g) {
     cout << "  EndNodes\tWeight\n";
     for (const auto &i : g)
         printf("%4d : %4d     %4d\n", i[0], i[1], i[2]);
-    //		cout << i[0] << " : " << i[1] << "\t\t" << i[2] << "\n";
 }
 
 void print(vec &g) {
     cout << "  Distance\tPredecessor\n";
     for (unsigned i = 0; i < _n; ++i)
-        printf("%4d : %6d    %s\n", i + 1, g[i].first, g[i].second.c_str());
-    //		cout << i + 1 << "# " << g[i].first << "\t\t" << g[i].second << "\n";
+        printf("%4d : %6d    %d\n", i + 1, g[i].first, g[i].second);
 }
 
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
 void bellman_ford(vec &table, const vector <array<int, 3>> &g, const int source) {
     for (auto i = 0; i < _n; ++i)
-        table[i] = make_pair(INT_MAX / 2, "-");
+        table[i] = make_pair(INT_MAX / 2, -1);
 
     table[source].first = 0;
 
@@ -97,13 +79,11 @@ void bellman_ford(vec &table, const vector <array<int, 3>> &g, const int source)
             const auto w = j[2];
             if (table[u].first + w < table[v].first) {
                 table[v].first = table[u].first + w;
-                if (predecessor)
-                    table[v].second = to_string(u + 1); // + "-";
+                table[v].second = u + 1;
             }
             if (table[v].first + w < table[u].first) {
                 table[u].first = table[v].first + w;
-                if (predecessor)
-                    table[u].second = to_string(v + 1); // + "-";
+                table[u].second = v + 1;
             }
         }
     }
@@ -114,7 +94,7 @@ void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
     //auto table = new vector<pair<int, string>>;
 
     for (auto i = 0; i < _n; ++i)
-        table[i] = make_pair(INT_MAX / 2, "-");
+        table[i] = make_pair(INT_MAX / 2, -1);
     table[source].first = 0;
     vector<int> Q;
     vector<bool> is(_n, false);
@@ -138,8 +118,7 @@ void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
             const auto w = j[2];
             if (table[u1].first + w < table[v1].first) {
                 table[v1].first = table[u1].first + w;
-                if (predecessor)
-                    table[v1].second = to_string(u); // +"-";
+                table[v1].second = u;
                 if (!is[v1]) {
                     Q.push_back(v);
                     is[v1] = true;
@@ -153,7 +132,7 @@ void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
     //auto table = new vector<pair<int, string>>;
 
     for (auto i = 0; i < _n; ++i)
-        table[i] = make_pair(INT_MAX / 2, "-");
+        table[i] = make_pair(INT_MAX / 2, -1);
     table[source].first = 0;
     deque<int> Q;
     vector<bool> is(_n, false);
@@ -177,8 +156,7 @@ void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
             const auto w = j[2];
             if (table[u1].first + w < table[v1].first) {
                 table[v1].first = table[u1].first + w;
-                if (predecessor)
-                    table[v1].second = to_string(u); // + "-";
+                table[v1].second = to_string(u);
                 if (!is[v1]) {
                     if (!Q.empty() && table[v1].first < Q.back())
                         Q.push_front(v);
@@ -194,7 +172,7 @@ void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
 void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
 
     for (auto i = 0; i < _n; ++i)
-        table[i] = make_pair(INT_MAX / 2, "-");
+        table[i] = make_pair(INT_MAX / 2, -1);
     table[source].first = 0;
     deque<int> Q;
     vector<bool> is(_n, false);
@@ -220,8 +198,7 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
             const auto w = j[2];
             if (table[u1].first + w < table[v1].first) {
                 table[v1].first = table[u1].first + w;
-                if (predecessor)
-                    table[v1].second = to_string(u); // +"-";
+                table[v1].second = to_string(u);
                 if (!is[v1]) {
                     Q.push_back(v);
                     sum += table[v1].first;
@@ -240,11 +217,6 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
     }
 }
 
-void auction(vec &table, const vector <array<int, 3>> &g, const int source) {
-
-
-}
-
 tuple<double, int, int> routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm alg, int threads) {
     //const auto tab = new vector< vector<pair<int, string>>* >(n);
     decltype(bellman_ford) *fun;
@@ -257,8 +229,6 @@ tuple<double, int, int> routing_table(matrix &table, const vector <array<int, 3>
         fun = &slf;
     else if (alg == LLL)
         fun = &lll;
-    else if (alg == Auction)
-        fun = &auction;
     else
         return make_tuple(0.0, 0, 0);
 
