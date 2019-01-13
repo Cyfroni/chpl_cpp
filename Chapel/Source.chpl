@@ -115,6 +115,42 @@ proc generic2(table, g, source){
 	}
 }
 
+proc generic3(table, g, source){
+	use DistributedDeque;
+
+	for i in table.domain{
+		table[i] = (1 << 30, -1);
+	}
+	table[source][1] = 0;
+
+	var Q = new DistDeque(int);
+	var is: [1.._n] bool;
+	Q.pushBack(source);
+	is[source] = true;
+
+	while Q.getSize() != 0{
+		var (_, u) = Q.popBack();
+		is[u] = false;
+		var v: int;
+		for j in g{
+			if u == j[1] then v = j[2];
+			else if u == j[2] then v = j[1];
+			else
+				continue;
+
+			var w = j[3];
+			if table[u][1] + w < table[v][1]{
+				table[v][1] = table[u][1] + w;
+				table[v][2] = u;
+				if !is[v]{
+					Q.pushBack(v);
+					is[v] = true;
+				}
+			}
+		}
+	}
+}
+
 proc slf(table, g, source){
 
 	for i in table.domain{
