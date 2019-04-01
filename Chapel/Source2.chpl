@@ -29,7 +29,7 @@ proc transpose(z){
 }
 
 proc main() {
-  var reader = open("../35.data", iomode.r).reader();
+  var reader = open("../25.data", iomode.r).reader();
   var reader2 = open("../1.dnn", iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
@@ -61,7 +61,7 @@ proc main() {
         x_train[k, l] = item : real;
         l += 1;
       }
-      if data[1] == "M" {
+      if data[1] == "B" {
         y_train[k, ..] = [1.0, 0.0];
       } else {
         y_train[k, ..] = [0.0, 1.0];
@@ -82,8 +82,8 @@ proc main() {
     x_train[.., i] = [a in x_train[.., i]] (a - mean) / std;
   }
 
-  var BATCH_SIZE = 35;
-  var lr = 0.0001/BATCH_SIZE;
+  var BATCH_SIZE = 10;
+  var lr = 0.01/BATCH_SIZE;
 
   var W1 : [1..dnn[2], 1..dnn[3]] real;
   var W2 : [1..dnn[3], 1..dnn[4]] real;
@@ -138,14 +138,15 @@ proc main() {
     if (i % 100 == 0){
         writeln("-----------------------------------------------Epoch ", i, "--------------------------------------------------");
         writeln("Predictions:");
-        writeln(yhat[(1..19) + indx, ..]);
-        //writeln("Ground truth:");
-        //writeln(b_y[(1..9) + indx, ..]);
+        writeln(yhat[(1..10) + indx, ..]);
+        writeln("Ground truth:");
+        writeln(b_y[(1..10) + indx, ..]);
         var loss_m = yhat - b_y;
         var loss = + reduce [j in loss_m] j**2;
         writeln("                                            Loss ", loss/BATCH_SIZE);
         writeln("                                            Time ", timer.elapsed());
         writeln("--------------------------------------------End of Epoch :(------------------------------------------------");
+        /* writeln(W1); */
     }
   }
   writeln("time: ", timer.elapsed());
