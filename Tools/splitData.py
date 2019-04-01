@@ -1,5 +1,7 @@
 import random
 
+LINES_AMOUNT = 375 # 375
+
 with open('wdbc_reformatted.data', 'r+') as f:
     content = f.read()
 
@@ -13,23 +15,32 @@ with open('wdbc_reformatted.data', 'r+') as f:
     for line in data:
         lines[line[0]].append(line)
 
-    print(len(lines['M']))
-    print(len(lines['B']))
+    m_length = len(lines['M'])
+    b_length = len(lines['B'])
+
+    m_learn = LINES_AMOUNT/5
+    b_learn = LINES_AMOUNT - m_learn
+
+    print(m_learn)
+    print(b_learn)
 
     # with open('../M.data', 'w+') as f_m:
     #     f_m.write('\n'.join(lines['M']))
     #
     # with open('../B.data', 'w+') as f_m:
     #     f_m.write('\n'.join(lines['B']))
+    with open('../all.data', 'w+') as __f:
+        __f.write('569,31,2\n')
+        with open('../train.data', 'w+') as _f:
+            _lines = lines['M'][:m_learn] + lines['B'][:b_learn]
+            random.shuffle(_lines)
+            _f.write(str(len(_lines)) + ',31,2\n' +
+                     '\n'.join(_lines))
+            __f.write('\n'.join(_lines))
 
-    with open('../train.data', 'w+') as _f:
-        _lines = lines['M'][:75] + lines['B'][:300]
-        random.shuffle(_lines)
-        _f.write(str(len(_lines)) + ',31,2\n' +
-                 '\n'.join(_lines))
-
-    with open('../test.data', 'w+') as _f:
-        _lines = lines['M'][75:] + lines['B'][300:]
-        random.shuffle(_lines)
-        _f.write(str(len(_lines)) + ',31,2\n' +
-                 '\n'.join(_lines))
+        with open('../test.data', 'w+') as _f:
+            _lines = lines['M'][m_learn:] + lines['B'][b_learn:]
+            random.shuffle(_lines)
+            _f.write(str(len(_lines)) + ',31,2\n' +
+                     '\n'.join(_lines))
+            __f.write('\n'.join(_lines))

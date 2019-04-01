@@ -29,10 +29,11 @@ proc transpose(z){
 }
 
 proc main() {
-  var reader = open("../25.data", iomode.r).reader();
+  var reader = open("../train.data", iomode.r).reader();
   var reader2 = open("../1.dnn", iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
+  var trainData = 375;
 
   reader.read(infoLine);
   var infoData = infoLine.split(',');
@@ -61,7 +62,7 @@ proc main() {
         x_train[k, l] = item : real;
         l += 1;
       }
-      if data[1] == "B" {
+      if data[1] == "M" {
         y_train[k, ..] = [1.0, 0.0];
       } else {
         y_train[k, ..] = [0.0, 1.0];
@@ -82,8 +83,8 @@ proc main() {
     x_train[.., i] = [a in x_train[.., i]] (a - mean) / std;
   }
 
-  var BATCH_SIZE = 10;
-  var lr = 0.01/BATCH_SIZE;
+  var BATCH_SIZE = 100;
+  var lr = 0.1/BATCH_SIZE;
 
   var W1 : [1..dnn[2], 1..dnn[3]] real;
   var W2 : [1..dnn[3], 1..dnn[4]] real;
@@ -110,8 +111,8 @@ proc main() {
   for i in 1..100000 {
     var indx = rand_indx[i] : int;
 
-    var b_x = x_train[(1..BATCH_SIZE) + indx, ..];//.reindex(0..BATCH_SIZE - 1, 0..dnn[2]);
-    var b_y = y_train[(1..BATCH_SIZE) + indx, ..];//.reindex(0..BATCH_SIZE - 1, 0..dnn[5]);
+    var b_x = x_train[(1..BATCH_SIZE) + indx, ..];
+    var b_y = y_train[(1..BATCH_SIZE) + indx, ..];
 
     var seed = SeedGenerator.oddCurrentTime;
     for i in b_x.domain.dim(2){
@@ -146,26 +147,7 @@ proc main() {
         writeln("                                            Loss ", loss/BATCH_SIZE);
         writeln("                                            Time ", timer.elapsed());
         writeln("--------------------------------------------End of Epoch :(------------------------------------------------");
-        /* writeln(W1); */
     }
   }
   writeln("time: ", timer.elapsed());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

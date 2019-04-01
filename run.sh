@@ -23,14 +23,15 @@ chmod 755 clear.sh
 ./clear.sh
 cd ..
 
-#rm -rf results/
-#mkdir results
+cd Tools
+python splitData.py
+cd ..
 
 for file in 1 #$args
 do
     for CNN in 1 #$cnn
     do
-        for threads in 1
+        for threads in 2
         do
 
             # cd OpenMP
