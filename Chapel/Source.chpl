@@ -34,6 +34,7 @@ proc main() {
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
   var trainData = 375;
+  var randStream: RandomStream(real) = new RandomStream(real);
 
   reader.read(infoLine);
   var infoData = infoLine.split(',');
@@ -78,14 +79,11 @@ proc main() {
     x_train[.., i] = [a in x_train[.., i]] (a - mean) / std;
   }
 
-  /* writeln(x_train);
-  return 0; */
-
-  var _b_x = x_train[trainData.., ..];
-  var _b_y = y_train[trainData.., ..];
+  var _b_x = x_train[(trainData + 1).., ..];
+  var _b_y = y_train[(trainData + 1).., ..];
 
   var BATCH_SIZE = 100;
-  var lr = 0.1/BATCH_SIZE;
+  var lr = 0.001/BATCH_SIZE;
 
   var W1 : [1..dnn[2], 1..dnn[3]] real;
   var W2 : [1..dnn[3], 1..dnn[4]] real;
@@ -141,13 +139,16 @@ proc main() {
         var _a1 = relu(dot(_b_x, W1));
         var _a2 = relu(dot(_a1, W2));
         var _yhat = softmax(dot(_a2, W3));
+        var rand = (randStream.getNext() * (dnn[1] - trainData - 1)) : int;
 
         writeln("---------------------------Epoch ", i, "---------------------------");
-        writeln("Predictions:");
-        writeln(_yhat[trainData.. # 15, ..]);
+        writeln(_yhat[(trainData + 1).. # 5, ..]);
+        writeln("---------------------------");
+        writeln(_yhat[(trainData + 1 + rand).. # 10, ..]);
         writeln();
-        writeln("Ground truth:");
-        writeln(_b_y[trainData.. # 15, ..]);
+        writeln(_yhat[(trainData + 1).. # 5, ..]);
+        writeln("---------------------------");
+        writeln(_b_y[(trainData + 1 + rand ).. # 10, ..]);
         writeln();
         var _loss_m = _yhat - _b_y;
         var _loss = + reduce [j in _loss_m] j**2;

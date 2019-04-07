@@ -77,7 +77,7 @@ vector<float> softmax(const vector<float> &z, const int dim) {
         float max_foo = *max_element(foo.begin(), foo.end());
 
         for (unsigned j = 0; j < dim; ++j) {
-            foo[j] = exp(foo[j] - max_foo);
+            foo[j] = exp(foo[j]); // - max_foo);
         }
 
         float sum_of_elems = 0.0;
@@ -258,11 +258,11 @@ int main(int argc, const char *argv[]) {
             line_v = split(line, ',');
 
             if (strcmp(line_v[0].c_str(), "M")){
-              y_train.push_back(1.);
               y_train.push_back(0.);
+              y_train.push_back(1.);
             } else {
-              y_train.push_back(0.);
               y_train.push_back(1.);
+              y_train.push_back(0.);
             }
 
             int size = static_cast<int>(line_v.size());
@@ -283,36 +283,33 @@ int main(int argc, const char *argv[]) {
 
     vector<int> dnn{ dataAmount, dataLength, stoi(line_v[0]), stoi(line_v[1]), categories };
 
-    for (int i=0; i<dataLength; i++){
+    for (int i=0; i<dnn[1]; i++){
       float sum = 0, std = 0;
-      for(int j = i; j < X_train.size(); j += dataLength){
+      for(int j = i; j < X_train.size(); j += dnn[1]){
         sum += X_train[j];
         std += X_train[j] * X_train[j];
       }
-      float mean = sum / dataAmount;
-      std = sqrt(std / dataAmount - mean * mean);
-      for(int j = i; j < X_train.size(); j += dataLength){
+      float mean = sum / dnn[0];
+      std = sqrt(std / dnn[0] - mean * mean);
+      for(int j = i; j < X_train.size(); j += dnn[1]){
         X_train[j] = (X_train[j] - mean) / std;
       }
     }
 
-    // print(X_train, dataAmount, dataLength);
-    // return 0;
-
-    vector<float> _b_X(X_train.begin() + 2*trainData, X_train.end());
-    vector<float> _b_y(y_train.begin() + 2*trainData, y_train.end());
+    vector<float> _b_X(X_train.begin() + dnn[1]*trainData, X_train.end());
+    vector<float> _b_y(y_train.begin() + dnn[4]*trainData, y_train.end());
 
     int xsize = static_cast<int>(X_train.size());
     int ysize = static_cast<int>(y_train.size());
 
     // Some hyperparameters for the NN
     int BATCH_SIZE = 100;
-    float lr = .1 / BATCH_SIZE;
+    float lr = .001 / BATCH_SIZE;
 
     // Random initialization of the weights
-    vector<float> W1 = random_vector(dataLength * dnn[2]);
+    vector<float> W1 = random_vector(dnn[1] * dnn[2]);
     vector<float> W2 = random_vector(dnn[2] * dnn[3]);
-    vector<float> W3 = random_vector(dnn[3] * categories);
+    vector<float> W3 = random_vector(dnn[3] * dnn[4]);
 
     const auto t1 = chrono::high_resolution_clock::now();
     cout << "Training the model ...\n";
@@ -322,35 +319,35 @@ int main(int argc, const char *argv[]) {
         int randindx = rand() % (trainData - BATCH_SIZE);
         vector<float> b_X;
         vector<float> b_y;
-        for (unsigned j = randindx * dataLength; j < (randindx + BATCH_SIZE) * dataLength; ++j) {
+        for (unsigned j = randindx * dnn[1]; j < (randindx + BATCH_SIZE) * dnn[1]; ++j) {
             b_X.push_back(X_train[j]);
         }
-        for (unsigned k = randindx * categories; k < (randindx + BATCH_SIZE) * categories; ++k) {
+        for (unsigned k = randindx * dnn[4]; k < (randindx + BATCH_SIZE) * dnn[4]; ++k) {
             b_y.push_back(y_train[k]);
         }
 
         auto seed = unsigned ( time(0) );
 
-        for (int j=0; j<categories; j++){
+        for (int j=0; j<dnn[4]; j++){
           srand ( seed );
-          random_column_shuffle ( b_X.begin(), b_X.end(), categories, j );
+          random_column_shuffle ( b_X.begin(), b_X.end(), dnn[4], j );
           srand ( seed );
-          random_column_shuffle ( b_y.begin(), b_y.end(), categories, j );
+          random_column_shuffle ( b_y.begin(), b_y.end(), dnn[4], j );
         }
 
 
         // Feed forward
-        vector<float> a1 = relu(dot(b_X, W1, BATCH_SIZE, dataLength, dnn[2]));
+        vector<float> a1 = relu(dot(b_X, W1, BATCH_SIZE, dnn[1], dnn[2]));
         vector<float> a2 = relu(dot(a1, W2, BATCH_SIZE, dnn[2], dnn[3]));
-        vector<float> yhat = softmax(dot(a2, W3, BATCH_SIZE, dnn[3], categories), categories);
+        vector<float> yhat = softmax(dot(a2, W3, BATCH_SIZE, dnn[3], dnn[4]), dnn[4]);
 
         // Back propagation
         vector<float> dyhat = (yhat - b_y);
-        vector<float> dW3 = dot(transpose(&a2[0], BATCH_SIZE, dnn[3]), dyhat, dnn[3], BATCH_SIZE, categories);
-        vector<float> dz2 = dot(dyhat, transpose(&W3[0], dnn[3], categories), BATCH_SIZE, categories, dnn[3]) * reluPrime(a2);
+        vector<float> dW3 = dot(transpose(&a2[0], BATCH_SIZE, dnn[3]), dyhat, dnn[3], BATCH_SIZE, dnn[4]);
+        vector<float> dz2 = dot(dyhat, transpose(&W3[0], dnn[3], dnn[4]), BATCH_SIZE, dnn[4], dnn[3]) * reluPrime(a2);
         vector<float> dW2 = dot(transpose(&a1[0], BATCH_SIZE, dnn[2]), dz2, dnn[2], BATCH_SIZE, dnn[3]);
         vector<float> dz1 = dot(dz2, transpose(&W2[0], dnn[2], dnn[3]), BATCH_SIZE, dnn[3], dnn[2]) * reluPrime(a1);
-        vector<float> dW1 = dot(transpose(&b_X[0], BATCH_SIZE, dataLength), dz1, dataLength, BATCH_SIZE, dnn[2]);
+        vector<float> dW1 = dot(transpose(&b_X[0], BATCH_SIZE, dnn[1]), dz1, dnn[1], BATCH_SIZE, dnn[2]);
 
         // Updating the parameters
         W3 = W3 - lr * dW3;
@@ -361,22 +358,20 @@ int main(int argc, const char *argv[]) {
         if ((i + 1) % 500 == 0) {
             cout << "---------------------------------Epoch " << i + 1
                  << "---------------------------------" << "\n";
-            vector<float> _a1 = relu(dot(_b_X, W1, dataAmount - trainData, dataLength, dnn[2]));
-            vector<float> _a2 = relu(dot(_a1, W2, dataAmount - trainData, dnn[2], dnn[3]));
-            vector<float> _yhat = softmax(dot(_a2, W3, dataAmount - trainData, dnn[3], categories), categories);
+            vector<float> _a1 = relu(dot(_b_X, W1, dnn[0] - trainData, dnn[1], dnn[2]));
+            vector<float> _a2 = relu(dot(_a1, W2, dnn[0] - trainData, dnn[2], dnn[3]));
+            vector<float> _yhat = softmax(dot(_a2, W3, dnn[0] - trainData, dnn[3], dnn[4]), dnn[4]);
 
-            cout << "Predictions:" << "\n";
-            print(_yhat, 15, categories);
-            cout << "Ground truth:" << "\n";
-            print(_b_y, 15, categories);
+            print(_yhat, 15, dnn[4]);
+            print(_b_y, 15, dnn[4]);
             vector<float> loss_m = yhat - b_y;
             float loss = 0.0;
-            for (unsigned k = 0; k < BATCH_SIZE * categories; ++k) {
+            for (unsigned k = 0; k < BATCH_SIZE * dnn[4]; ++k) {
                 loss += loss_m[k] * loss_m[k];
             }
             vector<float> _loss_m = _yhat - _b_y;
             float _loss = 0.0;
-            for (unsigned k = 0; k < (dataAmount - trainData) * categories; ++k) {
+            for (unsigned k = 0; k < (dnn[0] - trainData) * dnn[4]; ++k) {
                 _loss += _loss_m[k] * _loss_m[k];
             }
 
@@ -384,7 +379,7 @@ int main(int argc, const char *argv[]) {
             chrono::duration<double, std::milli> fp_ms = t2 - t1;
 
             cout << "                              Loss " << loss / BATCH_SIZE << "\n";
-            cout << "                             _Loss " << _loss / (dataAmount - trainData) << "\n";
+            cout << "                             _Loss " << _loss / (dnn[0] - trainData) << "\n";
             cout << "                              Time " << fp_ms.count() / 1000.0 << " s\n";
         }
     }
