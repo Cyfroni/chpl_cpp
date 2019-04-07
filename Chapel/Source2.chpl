@@ -29,7 +29,7 @@ proc transpose(z){
 }
 
 proc main() {
-  var reader = open("../train.data", iomode.r).reader();
+  var reader = open("../all.data", iomode.r).reader();
   var reader2 = open("../1.dnn", iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
@@ -83,6 +83,9 @@ proc main() {
     x_train[.., i] = [a in x_train[.., i]] (a - mean) / std;
   }
 
+  var _b_x = x_train[trainData.., ..];
+  var _b_y = y_train[trainData.., ..];
+
   var BATCH_SIZE = 100;
   var lr = 0.1/BATCH_SIZE;
 
@@ -106,7 +109,7 @@ proc main() {
   timer.start();
 
   fillRandom(rand_indx);
-  rand_indx = [indx in rand_indx] indx * (dnn[1]-BATCH_SIZE);
+  rand_indx = [indx in rand_indx] indx * (trainData-BATCH_SIZE);
   writeln('learning..');
   for i in 1..100000 {
     var indx = rand_indx[i] : int;
@@ -136,17 +139,25 @@ proc main() {
     W2 = W2 - lr * dW2;
     W1 = W1 - lr * dW1;
 
-    if (i % 100 == 0){
-        writeln("-----------------------------------------------Epoch ", i, "--------------------------------------------------");
+    if (i % 500 == 0){
+        var _a1 = relu(dot(_b_x, W1));
+        var _a2 = relu(dot(_a1, W2));
+        var _yhat = softmax(dot(_a2, W3));
+
+        writeln("---------------------------Epoch ", i, "---------------------------");
         writeln("Predictions:");
-        writeln(yhat[(1..10) + indx, ..]);
+        writeln(_yhat[trainData.. # 15, ..]);
+        writeln();
         writeln("Ground truth:");
-        writeln(b_y[(1..10) + indx, ..]);
+        writeln(_b_y[trainData.. # 15, ..]);
+        writeln();
+        var _loss_m = _yhat - _b_y;
+        var _loss = + reduce [j in _loss_m] j**2;
         var loss_m = yhat - b_y;
         var loss = + reduce [j in loss_m] j**2;
-        writeln("                                            Loss ", loss/BATCH_SIZE);
-        writeln("                                            Time ", timer.elapsed());
-        writeln("--------------------------------------------End of Epoch :(------------------------------------------------");
+        writeln("                              Loss ", loss/BATCH_SIZE);
+        writeln("                             _Loss ", _loss/(dnn[1] - trainData));
+        writeln("                              Time ", timer.elapsed());
     }
   }
   writeln("time: ", timer.elapsed());

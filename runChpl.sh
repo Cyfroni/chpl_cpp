@@ -1,20 +1,9 @@
 #!/usr/bin/env bash
 
-#source chapel-1.18.0/util/setchplenv.bash
-
-#cd Tools
-#python prepare.py
-#cd ..
+source chapel-1.18.0/util/setchplenv.bash
 
 args="*.data"
 cnn="*.cnn"
-
-# cd OpenMP
-# chmod 755 compile.sh
-# ./compile.sh || exit 1
-# chmod 755 clear.sh
-# ./clear.sh
-# cd ..
 
 cd Chapel
 chmod 755 compile.sh
@@ -31,12 +20,8 @@ for file in 1 #$args
 do
     for CNN in 1 #$cnn
     do
-        for threads in 2
+        for threads in 1
         do
-
-            # cd OpenMP
-            # ./openmp.out $threads #$file $CNN $threads
-            # cd ..
 
             cd Chapel
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
