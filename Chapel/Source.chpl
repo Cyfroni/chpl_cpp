@@ -56,7 +56,6 @@ proc main() {
   writeln("reading..");
 	while reader.read(line){
     var data = line.split(',');
-    try{
       var l = 1;
       for item in data[2..]{
         x_train[k, l] = item : real;
@@ -67,11 +66,7 @@ proc main() {
       } else {
         y_train[k, ..] = [0.0, 1.0];
       }
-      /* y_train[k] = data[10] : real; */
       k += 1;
-    } catch e {
-      continue;
-    }
 	}
   reader.close();
 
@@ -82,6 +77,9 @@ proc main() {
     std = sqrt(std / dnn[1] - mean * mean);
     x_train[.., i] = [a in x_train[.., i]] (a - mean) / std;
   }
+
+  /* writeln(x_train);
+  return 0; */
 
   var _b_x = x_train[trainData.., ..];
   var _b_y = y_train[trainData.., ..];

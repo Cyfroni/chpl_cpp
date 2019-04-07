@@ -3,11 +3,12 @@
 #include <math.h>
 #include <fstream>
 #include <sstream>
-#include <string>
+#include <string.h>
 #include <random>
 #include <algorithm>
 #include <chrono>
 #include <omp.h>
+#include <ctime>
 
 using namespace std;
 
@@ -222,6 +223,17 @@ vector <string> split(const string &s, char delim) {
     return tokens;
 }
 
+template< class RandomIt >
+void random_column_shuffle( RandomIt first, RandomIt last, int columns, int column)
+{
+    typename std::iterator_traits<RandomIt>::difference_type i, n;
+    n = (last - first)/columns;
+    for (i = n-1; i > 0; --i) {
+        using std::swap;
+        swap(first[i * columns + column], first[(std::rand() % (i+1)) * columns + column]);
+    }
+}
+
 int main(int argc, const char *argv[]) {
 
     string line;
@@ -240,12 +252,12 @@ int main(int argc, const char *argv[]) {
         getline(myfile, line);
         line_v = split(line, ',');
         dataAmount = stoi(line_v[0]);
-        dataLength = stoi(line_v[1]);
+        dataLength = stoi(line_v[1]) - 1;
         categories = stoi(line_v[2]);
         while (getline(myfile, line)) {
             line_v = split(line, ',');
 
-            if (line_v[0] == "M"){
+            if (strcmp(line_v[0].c_str(), "M")){
               y_train.push_back(1.);
               y_train.push_back(0.);
             } else {
@@ -284,6 +296,9 @@ int main(int argc, const char *argv[]) {
       }
     }
 
+    // print(X_train, dataAmount, dataLength);
+    // return 0;
+
     vector<float> _b_X(X_train.begin() + 2*trainData, X_train.end());
     vector<float> _b_y(y_train.begin() + 2*trainData, y_train.end());
 
@@ -292,7 +307,7 @@ int main(int argc, const char *argv[]) {
 
     // Some hyperparameters for the NN
     int BATCH_SIZE = 100;
-    float lr = .03 / BATCH_SIZE;
+    float lr = .1 / BATCH_SIZE;
 
     // Random initialization of the weights
     vector<float> W1 = random_vector(dataLength * dnn[2]);
@@ -313,6 +328,16 @@ int main(int argc, const char *argv[]) {
         for (unsigned k = randindx * categories; k < (randindx + BATCH_SIZE) * categories; ++k) {
             b_y.push_back(y_train[k]);
         }
+
+        auto seed = unsigned ( time(0) );
+
+        for (int j=0; j<categories; j++){
+          srand ( seed );
+          random_column_shuffle ( b_X.begin(), b_X.end(), categories, j );
+          srand ( seed );
+          random_column_shuffle ( b_y.begin(), b_y.end(), categories, j );
+        }
+
 
         // Feed forward
         vector<float> a1 = relu(dot(b_X, W1, BATCH_SIZE, dataLength, dnn[2]));

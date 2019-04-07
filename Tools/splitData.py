@@ -36,7 +36,7 @@ with open('wdbc_reformatted.data', 'r+') as f:
             random.shuffle(_lines)
             _f.write(str(len(_lines)) + ',31,2\n' +
                      '\n'.join(_lines))
-            __f.write('\n'.join(_lines))
+            __f.write('\n'.join(_lines) + '\n')
 
         with open('../test.data', 'w+') as _f:
             _lines = lines['M'][m_learn:] + lines['B'][b_learn:]

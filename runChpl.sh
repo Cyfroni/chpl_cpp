@@ -13,7 +13,7 @@ chmod 755 clear.sh
 cd ..
 
 cd Tools
-python splitData.py
+ # python splitData.py
 cd ..
 
 for file in 1 #$args
