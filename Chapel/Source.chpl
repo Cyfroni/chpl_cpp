@@ -139,17 +139,16 @@ proc main() {
         var _a1 = relu(dot(_b_x, W1));
         var _a2 = relu(dot(_a1, W2));
         var _yhat = softmax(dot(_a2, W3));
-        var rand = (randStream.getNext() * (dnn[1] - trainData - 1)) : int;
+        var rand = (randStream.getNext() * (dnn[1] - trainData - 11)) : int;
 
-        writeln("---------------------------Epoch ", i, "---------------------------");
+        writeln("------------------------------Epoch ", i, "------------------------------");
         writeln(_yhat[(trainData + 1).. # 5, ..]);
-        writeln("---------------------------");
+        writeln("<..>");
         writeln(_yhat[(trainData + 1 + rand).. # 10, ..]);
-        writeln();
-        writeln(_yhat[(trainData + 1).. # 5, ..]);
-        writeln("---------------------------");
+        writeln("------------------------------");
+        writeln(_b_y[(trainData + 1).. # 5, ..]);
+        writeln("<..>");
         writeln(_b_y[(trainData + 1 + rand ).. # 10, ..]);
-        writeln();
         var _loss_m = _yhat - _b_y;
         var _loss = + reduce [j in _loss_m] j**2;
         var loss_m = yhat - b_y;

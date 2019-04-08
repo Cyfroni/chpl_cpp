@@ -22,7 +22,6 @@ void print(const vector<float> &m, int n_rows, int n_columns) {
         }
         cout << '\n';
     }
-    cout << endl;
 }
 
 int argmax(const vector<float> &m) {
@@ -356,14 +355,22 @@ int main(int argc, const char *argv[]) {
 
 
         if ((i + 1) % 500 == 0) {
-            cout << "---------------------------------Epoch " << i + 1
-                 << "---------------------------------" << "\n";
+            cout << "------------------------------Epoch " << i + 1
+                 << "------------------------------" << "\n";
             vector<float> _a1 = relu(dot(_b_X, W1, dnn[0] - trainData, dnn[1], dnn[2]));
             vector<float> _a2 = relu(dot(_a1, W2, dnn[0] - trainData, dnn[2], dnn[3]));
             vector<float> _yhat = softmax(dot(_a2, W3, dnn[0] - trainData, dnn[3], dnn[4]), dnn[4]);
+            int randinx2 = (rand() % (dnn[0] - trainData - 11)) * dnn[4];
+            vector<float> _yhat10(_yhat.begin() + randinx2, _yhat.begin() + randinx2 + 10 * dnn[4]);
+            vector<float> _b_y10(_b_y.begin() + randinx2, _b_y.begin() + randinx2 + 10 * dnn[4]);
 
-            print(_yhat, 15, dnn[4]);
-            print(_b_y, 15, dnn[4]);
+            print(_yhat, 5, dnn[4]);
+            cout << "<..>\n";
+            print(_yhat10, 10, dnn[4]);
+            cout << "------------------------------\n";
+            print(_b_y, 5, dnn[4]);
+            cout << "<..>\n";
+            print(_b_y10, 10, dnn[4]);
             vector<float> loss_m = yhat - b_y;
             float loss = 0.0;
             for (unsigned k = 0; k < BATCH_SIZE * dnn[4]; ++k) {
