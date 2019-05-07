@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+args="*.dnn"
+
 source chapel-1.18.0/util/setchplenv.bash
 
 cd Chapel
@@ -10,7 +12,7 @@ chmod 755 clear.sh
 cd ..
 
 
-for file in *.dnn
+for file in $args
 do
     dnn=`cat $file`
     file="../$file"
