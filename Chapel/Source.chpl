@@ -33,7 +33,7 @@ proc transpose(z){
 
 proc main() {
   var reader = open("../all.data", iomode.r).reader();
-  var reader2 = open("../" + file, iomode.r).reader();
+  var reader2 = open("../" + file : string, iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
   var trainData = 375;
