@@ -26,7 +26,7 @@ do
     for alg in 1 2 3 4
     do
         algName=${algorithms[$alg]}
-        for threads in 4 2 1
+        for threads in 8 4 2 1
         do
 
             cd Chapel
