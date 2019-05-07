@@ -21,16 +21,18 @@ cd ..
 
 for file in $args
 do
+    fileName=${file:0:-3}
     file="../$file"
     for alg in 1 2 3 4
     do
+        algName=${algorithms[$alg]}
         for threads in 4 2 1
         do
 
             cd Chapel
             ./clear.sh
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-            echo $file $alg $threads
+            echo $fileName $algName $threads
             ./chpl.out --file=$file --alg=$alg
             cd ..
 

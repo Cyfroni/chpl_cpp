@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+
+
 args="*.in"
 
 algorithms=(
@@ -10,7 +12,7 @@ algorithms=(
     LLL
 )
 
-cd Chapel
+cd OpenMP
 chmod 755 compile.sh
 ./compile.sh
 chmod 755 clear.sh
@@ -19,15 +21,18 @@ cd ..
 
 for file in $args
 do
+    fileName=${file:0:-3}
     file="../$file"
     for alg in 1 2 3 4
     do
+        algName=${algorithms[$alg]}
         for threads in 4 2 1
         do
 
             cd OpenMP
             ./clear.sh
-            echo $file $alg $threads
+
+            echo $fileName $algName $threads
             ./openmp.out $file $alg $threads
             cd ..
 
