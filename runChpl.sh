@@ -12,6 +12,7 @@ cd ..
 
 for file in *.dnn
 do
+    dnn=`cat $file`
     for batch in 100 25 5 1
     do
         for threads in 8 4 2 1
@@ -19,7 +20,7 @@ do
 
             cd Chapel
             ./clear
-            echo "$file $batch ($threads)"
+            echo "$dnn $batch ($threads)"
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
             ./chpl.out --file=$file --batch=$batch
             cd ..

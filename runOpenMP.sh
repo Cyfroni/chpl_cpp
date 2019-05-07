@@ -12,6 +12,7 @@ cd ..
 
 for file in *.dnn
 do
+    dnn=`cat $file`
     for batch in 100 25 5 1
     do
         for threads in 8 4 2 1
@@ -19,7 +20,7 @@ do
 
             cd OpenMP
             ./clear.sh
-            echo "$file $batch ($threads)"
+            echo "$dnn $batch ($threads)"
 
             ./openmp.out $file $batch $threads
             cd ..
