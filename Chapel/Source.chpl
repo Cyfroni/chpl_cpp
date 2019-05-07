@@ -121,11 +121,5 @@ if (p==1) {
   }
 }
 
-/* writeln('Powell - ', n);
-writeln('-----------------------------------');
-writeln('xopt =\n', xopt);
-writeln('-----------------------------------');
-writeln('fopt = ', ft); */
-writeln('-----------------------------------');
-writeln('Time od calculations: ', timer.elapsed(), ' s');
-writeln('-----------------------------------');
+writeln(n, " ", p, "")
+writeln(timer.elapsed());

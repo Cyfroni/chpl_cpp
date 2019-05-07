@@ -205,23 +205,9 @@ int main(int argc, char **argv) {
         }
     }
     tf = omp_get_wtime();
-    // printf("Powell - %d:\n", n);
-    // printf("-----------------------------------\n");
-    // printf("xopt =\n");
-    // noel = 1;
-    // for (i = 1; i <= p; i++)
-    //     for (j = 1; j <= ni; j++) {
-    //         printf("%7.4f ", xopt[i][j]);
-    //         if (noel % 10 == 0)
-    //             printf("\n");
-    //         noel = noel + 1;
-    //     }
-    // printf("\n");
-    // printf("-----------------------------------\n");
-    // printf("fopt =%f\n", ft);
-    printf("-----------------------------------\n");
-    printf(" Time od calculations: %f s\n", tf - t0);
-    printf("-----------------------------------\n");
+
+    printf(tf - t0);
+
     for (i = 0; i <= p; i++) {
         free(xopt[i]);
         free(xprev[i]);
