@@ -107,7 +107,7 @@ proc main() {
   fillRandom(rand_indx);
   rand_indx = [indx in rand_indx] indx * (trainData-BATCH_SIZE);
   writeln('learning..');
-  for i in 1..100000 {
+  for i in 1..10000 {
     var indx = rand_indx[i] : int;
 
     var b_x = x_train[(1..BATCH_SIZE) + indx, ..];
@@ -135,7 +135,7 @@ proc main() {
     W2 = W2 - lr * dW2;
     W1 = W1 - lr * dW1;
 
-    if (i % 500 == 0){
+    if (i % 10000 == 0){
         var _a1 = relu(dot(_b_x, W1));
         var _a2 = relu(dot(_a1, W2));
         var _yhat = softmax(dot(_a2, W3));
