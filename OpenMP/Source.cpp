@@ -277,11 +277,13 @@ int main(int argc, char **argv) // argv = [name, alg, threads]
 
     auto result = routing_table(table[0], graph, algoritm(alg), threads);
 
-    ofstream file_out("time.txt", fstream::out);
-    file_out << get<0>(result);
-    file_out.close();
+    cout<<get<0>(result)<<endl;
 
-    write_to_file_raw(table[0]);
+    // ofstream file_out("time.txt", fstream::out);
+    // file_out << get<0>(result);
+    // file_out.close();
+
+    //write_to_file_raw(table[0]);
 
     return 0;
 }

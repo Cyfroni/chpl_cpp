@@ -283,9 +283,11 @@ proc main() {
 
   var elapsedTime = routing_table(table, graph, alg);
 
-	var writer = open("time.txt", iomode.cw).writer();
-	writer.write(elapsedTime);
+  writeln(elapsedTime);
 
-	write_to_file_raw(table);
+	/* var writer = open("time.txt", iomode.cw).writer();
+	writer.write(elapsedTime); */
+
+	//write_to_file_raw(table);
 
 }
