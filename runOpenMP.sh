@@ -9,14 +9,14 @@ cd ..
 
 for n in 200 400
 do
-	for p in 20 10 5 2 1
+    for p in 20 10 5 2 1
     do
         for threads in 8 4 2 1
-	      do
-        	 cd OpenMP
-           	 echo $n $p $threads
-        	 ./openmp.out $n $p $threads
-        	 cd ..
-	      done
+        do
+            cd OpenMP
+            echo $n $p $threads
+            ./openmp.out $n $p $threads
+            cd ..
+        done
     done
 done
