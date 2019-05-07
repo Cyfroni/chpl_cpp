@@ -1,5 +1,5 @@
 config const file = " ";
-config const batch = 0;
+config const batch = 1;
 
 proc relu(array){
   var output = [i in array] if i < 0.0 then 0.0 else i;
@@ -33,7 +33,7 @@ proc transpose(z){
 
 proc main() {
   var reader = open("../all.data", iomode.r).reader();
-  var reader2 = open("../" + file : string, iomode.r).reader();
+  var reader2 = open("../" + (file : string), iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
   var trainData = 375;
