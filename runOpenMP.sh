@@ -21,7 +21,7 @@ do
             ./clear.sh
             echo "$file $batch ($threads)"
 
-            ./openmp.out $file $alg $threads
+            ./openmp.out $file $batch $threads
             cd ..
 
         done

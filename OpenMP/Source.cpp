@@ -242,8 +242,8 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     threads = atoi(argv[3]);
     int trainData = 375;
 
-    cout << "<OpenMP>\n\n";
-    cout << "Loading data ...\n";
+    //cout << "<OpenMP>\n\n";
+    //cout << "Loading data ...\n";
     vector<float> X_train;
     vector<float> y_train;
     ifstream myfile("../all.data");
