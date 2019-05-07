@@ -276,7 +276,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
         cout << "Unable to open file" << '\n';
     }
 
-    ifstream file("../" + string(argv[1]));
+    ifstream file(string(argv[1]));
     getline(file, line);
     line_v = split(line, ',');
 
