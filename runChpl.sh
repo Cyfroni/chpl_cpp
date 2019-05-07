@@ -10,10 +10,20 @@ chmod 755 clear.sh
 cd ..
 
 
-for threads in 8 4 2 1
+for file in "*.dnn"
 do
-    cd Chapel
-    export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-    ./chpl.out
-    cd ..
+    for batch in 1 5 25 100
+    do
+        for threads in 8 4 2 1
+        do
+
+            cd Chapel
+            ./clear
+            echo $file $batch ($threads)
+            export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+            ./chpl.out --file=$file --batch=$alg
+            cd ..
+
+        done
+    done
 done

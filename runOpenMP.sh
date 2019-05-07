@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+
+
 cd OpenMP
 chmod 755 compile.sh
 ./compile.sh || exit 1
@@ -8,9 +10,20 @@ chmod 755 clear.sh
 cd ..
 
 
-for threads in 8 4 2 1
+for file in "*.dnn"
 do
-    cd OpenMP
-    ./openmp.out $threads
-    cd ..
+    for batch in 1 5 25 100
+    do
+        for threads in 8 4 2 1
+        do
+
+            cd OpenMP
+            ./clear.sh
+            echo $file $batch ($threads)
+            
+            ./openmp.out $file $alg $threads
+            cd ..
+
+        done
+    done
 done

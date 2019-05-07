@@ -233,13 +233,13 @@ void random_column_shuffle( RandomIt first, RandomIt last, int columns, int colu
     }
 }
 
-int main(int argc, const char *argv[]) {
+int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
 
     string line;
     vector <string> line_v;
     int dataAmount, dataLength, categories;
 
-    threads = atoi(argv[1]);
+    threads = atoi(argv[3]);
     int trainData = 375;
 
     cout << "<OpenMP>\n\n";
@@ -276,7 +276,7 @@ int main(int argc, const char *argv[]) {
         cout << "Unable to open file" << '\n';
     }
 
-    ifstream file("../1.dnn");
+    ifstream file("../" + argv[1]);
     getline(file, line);
     line_v = split(line, ',');
 
@@ -302,7 +302,7 @@ int main(int argc, const char *argv[]) {
     int ysize = static_cast<int>(y_train.size());
 
     // Some hyperparameters for the NN
-    int BATCH_SIZE = 100;
+    int BATCH_SIZE = atoi(argv[2]);
     float lr = .001 / BATCH_SIZE;
 
     // Random initialization of the weights
@@ -354,7 +354,7 @@ int main(int argc, const char *argv[]) {
         W1 = W1 - lr * dW1;
 
 
-        if ((i + 1) % 10000 == 0) {
+        if ((i + 1) % 10001 == 0) {
             cout << "------------------------------Epoch " << i + 1
                  << "------------------------------" << "\n";
             vector<float> _a1 = relu(dot(_b_X, W1, dnn[0] - trainData, dnn[1], dnn[2]));
@@ -390,6 +390,8 @@ int main(int argc, const char *argv[]) {
             cout << "                              Time " << fp_ms.count() / 1000.0 << " s\n";
         }
     }
-
+    const auto t2 = chrono::high_resolution_clock::now();
+    chrono::duration<double, std::milli> fp_ms = t2 - t1;
+    cout << fp_ms.count() << endl;
     return 0;
 }

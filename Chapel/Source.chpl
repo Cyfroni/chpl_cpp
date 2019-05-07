@@ -1,3 +1,6 @@
+config const file = " ";
+config const batch = 0;
+
 proc relu(array){
   var output = [i in array] if i < 0.0 then 0.0 else i;
   return output;
@@ -30,7 +33,7 @@ proc transpose(z){
 
 proc main() {
   var reader = open("../all.data", iomode.r).reader();
-  var reader2 = open("../1.dnn", iomode.r).reader();
+  var reader2 = open("../" + file, iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
   var trainData = 375;
@@ -82,7 +85,7 @@ proc main() {
   var _b_x = x_train[(trainData + 1).., ..];
   var _b_y = y_train[(trainData + 1).., ..];
 
-  var BATCH_SIZE = 100;
+  var BATCH_SIZE = batch : int;
   var lr = 0.001/BATCH_SIZE;
 
   var W1 : [1..dnn[2], 1..dnn[3]] real;
