@@ -19,8 +19,8 @@ do
 
             cd OpenMP
             ./clear.sh
-            echo $file $batch ($threads)
-            
+            echo "$file $batch ($threads)"
+
             ./openmp.out $file $alg $threads
             cd ..
 

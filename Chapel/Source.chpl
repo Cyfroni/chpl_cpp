@@ -57,7 +57,7 @@ proc main() {
   var y_train : [1..dnn[1], 1..dnn[5]] real;
   var x_train : [1..dnn[1], 1..dnn[2]] real;
   var k = 1;
-  writeln("reading..");
+  //writeln("reading..");
 	while reader.read(line){
     var data = line.split(',');
       var l = 1;
@@ -93,7 +93,7 @@ proc main() {
   var W3 : [1..dnn[4], 1..dnn[5]] real;
 
   use Random;
-  writeln('randomizing..');
+  //writeln('randomizing..');
   fillRandom(W1);
   W1 = [i in W1] i / 20.0;
   fillRandom(W2);
@@ -109,7 +109,7 @@ proc main() {
 
   fillRandom(rand_indx);
   rand_indx = [indx in rand_indx] indx * (trainData-BATCH_SIZE);
-  writeln('learning..');
+  //writeln('learning..');
   for i in 1..10000 {
     var indx = rand_indx[i] : int;
 
@@ -138,7 +138,7 @@ proc main() {
     W2 = W2 - lr * dW2;
     W1 = W1 - lr * dW1;
 
-    if (i % 10000 == 0){
+    if (i % 10001 == 0){
         var _a1 = relu(dot(_b_x, W1));
         var _a2 = relu(dot(_a1, W2));
         var _yhat = softmax(dot(_a2, W3));
@@ -161,5 +161,5 @@ proc main() {
         writeln("                              Time ", timer.elapsed());
     }
   }
-  writeln("time: ", timer.elapsed());
+  writeln(timer.elapsed());
 }

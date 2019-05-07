@@ -19,9 +19,9 @@ do
 
             cd Chapel
             ./clear
-            echo $file $batch ($threads)
+            echo "$file $batch ($threads)"
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-            ./chpl.out --file=$file --batch=$alg
+            ./chpl.out --file=$file --batch=$batch
             cd ..
 
         done

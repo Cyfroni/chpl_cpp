@@ -311,7 +311,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     vector<float> W3 = random_vector(dnn[3] * dnn[4]);
 
     const auto t1 = chrono::high_resolution_clock::now();
-    cout << "Training the model ...\n";
+    //cout << "Training the model ...\n";
     for (unsigned i = 0; i < 10000; ++i) {
 
         // Building batches of input variables (X) and labels (y)
