@@ -10,10 +10,10 @@ chmod 755 clear.sh
 cd ..
 
 
-for threads in 1
+for threads in 8 4 2 1
 do
-  cd Chapel
-  export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-  ./chpl.out
-  cd ..
+    cd Chapel
+    export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+    ./chpl.out
+    cd ..
 done
