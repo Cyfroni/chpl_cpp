@@ -8,7 +8,7 @@ chmod 755 clear.sh
 cd ..
 
 
-for threads in 1
+for threads in 8 4 2 1
 do
     cd OpenMP
     ./openmp.out $threads
