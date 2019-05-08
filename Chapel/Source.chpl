@@ -32,19 +32,22 @@ proc transpose(z){
 }
 
 proc main() {
-  var reader2 = open(file, iomode.r).reader();
-  var reader = open("../all.data", iomode.r).reader();
+
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
   var trainData = 375;
   var randStream: RandomStream(real) = new RandomStream(real);
 
+  var reader2 = open(file, iomode.r).reader();
+  reader2.read(dnnLine);
+  reader2.close();
+
+  var reader = open("../all.data", iomode.r).reader();
   reader.read(infoLine);
   var infoData = infoLine.split(',');
   var (dataAmount, dataLenght, categories) = (infoData[1], infoData[2], infoData[3]);
 
-  reader2.read(dnnLine);
-  reader2.close();
+
   var dnnData = dnnLine.split(',');
 
   dnn.push_back(dataAmount : int); // niepelne dane
