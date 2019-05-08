@@ -25,7 +25,7 @@ do
             ./clear.sh
             echo "$dnn $batch ($threads)"
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-            ./chpl.out --file=$file --batch=$batch
+            ./chpl.out --_file=$file --batch=$batch
             cd ..
 
         done

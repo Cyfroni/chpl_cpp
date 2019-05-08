@@ -1,4 +1,4 @@
-config const file : string;
+config const _file : string;
 config const batch : int;
 
 proc relu(array){
@@ -33,21 +33,19 @@ proc transpose(z){
 
 proc main() {
 
+  var reader = open("../all.data", iomode.r).reader();
+  var reader2 = open(_file, iomode.r).reader();
   var line, infoLine, dnnLine : string;
   var dnn : [1..0] int;
   var trainData = 375;
   var randStream: RandomStream(real) = new RandomStream(real);
-  writeln(file);
-  writeln(file : string);
-  var reader2 = open(file : string, iomode.r).reader();
-  reader2.read(dnnLine);
-  reader2.close();
 
-  var reader = open("../all.data", iomode.r).reader();
   reader.read(infoLine);
   var infoData = infoLine.split(',');
   var (dataAmount, dataLenght, categories) = (infoData[1], infoData[2], infoData[3]);
 
+  reader2.read(dnnLine);
+  reader2.close();
 
   var dnnData = dnnLine.split(',');
 
