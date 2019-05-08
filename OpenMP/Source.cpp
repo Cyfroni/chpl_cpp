@@ -3,7 +3,7 @@
 #include <math.h>
 #include <fstream>
 #include <sstream>
-#include <string>
+#include <string.h>
 #include <random>
 #include <algorithm>
 #include <chrono>
