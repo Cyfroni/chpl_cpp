@@ -1,5 +1,5 @@
-config const file = " ";
-config const batch = 1;
+config const file : string;
+config const batch : int;
 
 proc relu(array){
   var output = [i in array] if i < 0.0 then 0.0 else i;
