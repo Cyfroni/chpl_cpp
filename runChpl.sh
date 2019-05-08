@@ -22,7 +22,7 @@ do
         do
 
             cd Chapel
-            ./clear
+            ./clear.sh
             echo "$dnn $batch ($threads)"
             export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
             ./chpl.out --file=$file --batch=$batch
