@@ -246,14 +246,14 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     //cout << "Loading data ...\n";
     vector<float> X_train;
     vector<float> y_train;
-    ifstream myfile("../all.data");
-    if (myfile.is_open()) {
-        myfile >> line;
+    ifstream file_in("../all.data", fstream::in);
+    if (file_in.is_open()) {
+        file_in >> line;
         line_v = split(line, ',');
         dataAmount = stoi(line_v[0]);
         dataLength = stoi(line_v[1]) - 1;
         categories = stoi(line_v[2]);
-        while (getline(myfile, line)) {
+        while (file_in >> line)) {
             line_v = split(line, ',');
 
             if (strcmp(line_v[0].c_str(), "M")){
@@ -271,7 +271,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
 
         }
 
-        myfile.close();
+        file_in.close();
     } else {
         cout << "Unable to open file" << '\n';
     }
