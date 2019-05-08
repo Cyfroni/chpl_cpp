@@ -272,8 +272,8 @@ int main(int argc, char **argv) // argv = [name, alg, threads]
     file_in.close();
 
     cube table(K, matrix(_n, vec(_n)));
-    int alg = argv[2][0] - 48;
-    int threads = argv[3][0] - 48;
+    int alg = atoi(argv[2]);
+    int threads = atoi(argv[3]);
 
     auto result = routing_table(table[0], graph, algoritm(alg), threads);
 
