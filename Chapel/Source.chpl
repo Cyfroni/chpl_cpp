@@ -37,8 +37,9 @@ proc main() {
   var dnn : [1..0] int;
   var trainData = 375;
   var randStream: RandomStream(real) = new RandomStream(real);
-
-  var reader2 = open(file, iomode.r).reader();
+  writeln(file);
+  writeln(file : string);
+  var reader2 = open(file : string, iomode.r).reader();
   reader2.read(dnnLine);
   reader2.close();
 
