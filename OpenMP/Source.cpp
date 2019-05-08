@@ -248,7 +248,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     vector<float> y_train;
     ifstream myfile("../all.data");
     if (myfile.is_open()) {
-        getline(myfile, line);
+        myfile >> line;
         line_v = split(line, ',');
         dataAmount = stoi(line_v[0]);
         dataLength = stoi(line_v[1]) - 1;
@@ -277,7 +277,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     }
 
     ifstream file(string(argv[1]));
-    getline(file, line);
+    file >> line;
     line_v = split(line, ',');
 
     vector<int> dnn{ dataAmount, dataLength, stoi(line_v[0]), stoi(line_v[1]), categories };
