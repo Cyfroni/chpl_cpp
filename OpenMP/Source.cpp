@@ -253,7 +253,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
         dataAmount = stoi(line_v[0]);
         dataLength = stoi(line_v[1]) - 1;
         categories = stoi(line_v[2]);
-        while (file_in >> line)) {
+        while (file_in >> line) {
             line_v = split(line, ',');
 
             if (strcmp(line_v[0].c_str(), "M")){
