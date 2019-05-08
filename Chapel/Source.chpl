@@ -1,5 +1,5 @@
-config const file = " ";
-config const alg = 0;
+config const file : string;
+config const alg : int;
 
 var _n : int;
 enum algoritm{
