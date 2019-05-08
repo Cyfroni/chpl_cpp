@@ -1,5 +1,8 @@
 config const file : string;
 
-var randStream: RandomStream(real) = new RandomStream(real);
+proc main(){
 
-writeln(file);
+  var randStream: RandomStream(real) = new RandomStream(real);
+  writeln(file);
+  use Random;
+}
