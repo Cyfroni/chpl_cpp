@@ -123,6 +123,7 @@ proc lll(table, g, source){
       if !contain[1] then continue;       // if edge doesn't contain _i -> continue
       else if _i != i then i <=> j;       // also, make sure that i == _i
 
+
 			if table[i][1] + w < table[j][1] {
 				table[j][1] = table[i][1] + a;
 				table[j][2] = i;
