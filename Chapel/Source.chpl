@@ -67,7 +67,7 @@ proc generic(dp, g, source){
 			else
 				continue;
 
-			var w = j[3];
+			var w = e[3];
 			if dp[u][1] + w < dp[v][1]{
 				dp[v][1] = dp[u][1] + w;
 				dp[v][2] = u;
