@@ -123,13 +123,20 @@ proc lll(table, g, source){
       if !contain[1] then continue;       // if edge doesn't contain _i -> continue
       else if _i != i then i <=> j;       // also, make sure that i == _i
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 861060099fcc6fa7197d145bbd6d4d3135872598
 			if table[i][1] + w < table[j][1] {
 				table[j][1] = table[i][1] + a;
 				table[j][2] = i;
 				if !V.find(j)[1] {
 					V.push_back(j);
+<<<<<<< HEAD
           var sum = + reduce [x in V] x[1];
+=======
+          var sum = + reduce [x for V] x[1];
+>>>>>>> 861060099fcc6fa7197d145bbd6d4d3135872598
 					var c = (sum * 1.01) /  V.size;
 					v = Q.front();
 					while table[j][1] > c {
