@@ -73,10 +73,8 @@ vector<float> softmax(const vector<float> &z, const int dim) {
             foo.push_back(z[i + j]);
         }
 
-        float max_foo = *max_element(foo.begin(), foo.end());
-
         for (unsigned j = 0; j < dim; ++j) {
-            foo[j] = exp(foo[j]); // - max_foo);
+            foo[j] = exp(foo[j]));
         }
 
         float sum_of_elems = 0.0;
@@ -191,10 +189,10 @@ vector<float> transpose(float *m, const int C, const int R) {
 }
 
 vector<float>
-dot(const vector<float> &m1, const vector<float> &m2, const int m1_rows, const int m1_columns, const int m2_columns) {
+dot(const vector<float> &m1, const vector<float> &m2,
+  const int m1_rows, const int m1_columns, const int m2_columns) {
 
     vector<float> output(m1_rows * m2_columns);
-
 
     #pragma omp parallel num_threads(threads)
     {
@@ -203,7 +201,8 @@ dot(const vector<float> &m1, const vector<float> &m2, const int m1_rows, const i
             for (int col = 0; col < m2_columns; ++col) {
                 output[row * m2_columns + col] = 0.f;
                 for (int k = 0; k < m1_columns; ++k) {
-                    output[row * m2_columns + col] += m1[row * m1_columns + k] * m2[k * m2_columns + col];
+                    output[row * m2_columns + col] += m1[row * m1_columns + k]
+                                                    * m2[k * m2_columns + col];
                 }
             }
         }

@@ -125,17 +125,21 @@ proc main() {
     for i in b_y.domain.dim(2){
       shuffle(b_y[.., i], seed);
     }
+
+    // Feed forward
     var a1 = relu(dot(b_x, W1));
     var a2 = relu(dot(a1, W2));
     var yhat = softmax(dot(a2, W3));
     var dyhat = yhat - b_y;
 
+    // Back propagation
     var dW3 = dot(transpose(a2), dyhat);
     var dz2 = dot(dyhat, transpose(W3)) * reluPrime(a2);
     var dW2 = dot(transpose(a1), dz2);
     var dz1 = dot(dz2, transpose(W2)) * reluPrime(a1);
     var dW1 = dot(transpose(b_x), dz1);
 
+    // Updating the parameters
     W3 = W3 - lr * dW3;
     W2 = W2 - lr * dW2;
     W1 = W1 - lr * dW1;
