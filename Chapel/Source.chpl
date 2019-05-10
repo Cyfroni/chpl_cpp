@@ -94,10 +94,10 @@ proc slf(dp, g, s){
 				table[j][2] = i;                 // update predecessor
         if !V.find(j)[1] {
           if !V.isEmpty() && dp[j][1] < V.back() {
-              Q.push_front(j);
+              V.push_front(j);
           }
           else {
-              Q.push_back(j);
+              V.push_back(j);
           }
         }
 			}
@@ -123,18 +123,18 @@ proc lll(dp, g, s){
       if !contain[1] then continue;       // if edge doesn't contain _i -> continue
       else if _i != i then i <=> j;       // also, make sure that i == _i
 
-			if table[i][1] + w < table[j][1] {
+			if table[i][1] + a < table[j][1] {
 				table[j][1] = table[i][1] + a;
 				table[j][2] = i;
 				if !V.find(j)[1] {
 					V.push_back(j);
           var sum = + reduce [x in V] x[1];
 					var c = (sum * 1.01) /  V.size;
-					v = Q.front();
+					j = Q.front();
 					while table[j][1] > c {
-						Q.pop_front();
-						Q.push_back(j);
-						j = Q.front();
+						V.pop_front();
+						V.push_back(j);
+						j = V.front();
 					}
 				}
 			}
