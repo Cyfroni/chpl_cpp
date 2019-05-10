@@ -130,7 +130,7 @@ proc lll(dp, g, s){
 					V.push_back(j);
           var sum = + reduce [x in V] x[1];
 					var c = (sum * 1.01) /  V.size;
-					j = Q.front();
+					j = V.front();
 					while table[j][1] > c {
 						V.pop_front();
 						V.push_back(j);
