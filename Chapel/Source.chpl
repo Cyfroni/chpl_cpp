@@ -89,9 +89,9 @@ proc slf(dp, g, s){
       if !contain[1] then continue;      // if edge doesn't contain _i -> continue
       else if _i != i then i <=> j;      // also, make sure that i == _i
 
-			if table[i][1] + a < table[j][1] { // relaxation
-				table[j][1] = table[i][1] + a;   // update distance
-				table[j][2] = i;                 // update predecessor
+			if dp[i][1] + a < dp[j][1] { // relaxation
+				dp[j][1] = dp[i][1] + a;   // update distance
+				dp[j][2] = i;                 // update predecessor
         if !V.find(j)[1] {
           if !V.isEmpty() && dp[j][1] < V.back() {
               V.push_front(j);
@@ -123,15 +123,15 @@ proc lll(dp, g, s){
       if !contain[1] then continue;       // if edge doesn't contain _i -> continue
       else if _i != i then i <=> j;       // also, make sure that i == _i
 
-			if table[i][1] + a < table[j][1] {
-				table[j][1] = table[i][1] + a;
-				table[j][2] = i;
+			if dp[i][1] + a < dp[j][1] {
+				dp[j][1] = dp[i][1] + a;
+				dp[j][2] = i;
 				if !V.find(j)[1] {
 					V.push_back(j);
           var sum = + reduce [x in V] x[1];
 					var c = (sum * 1.01) /  V.size;
 					j = V.front();
-					while table[j][1] > c {
+					while dp[j][1] > c {
 						V.pop_front();
 						V.push_back(j);
 						j = V.front();
