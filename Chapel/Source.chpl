@@ -72,26 +72,23 @@ proc slf(dp, g, s){
 // g - graph (u, v, w)
 // s - start node
 
-  [x in dp] x = (1 << 30, -1);           // initialize with big distance
-                                         // and no predecessor
-
-	dp[s][1] = 0;                          // distance from source to source is 0
-	var V = [s];                           // Initialize queue with source node
-
+  [x in dp] x = (1 << 30, -1);            // initialize with big distance
+                                          // and no predecessor
+	dp[s][1] = 0;                           // distance from source to source is 0
+	var V = [s];                            // Initialize queue with source node
 
 	while !V.isEmpty() {
-		var _i = V.pop_back();
+		var _i = V.pop_front();               // take from the top
 
-		for (i,j,a) in g {
-      var contain = [i,j].find(_i);      // find only edges with _i
-      if !contain[1] then continue;      // if edge doesn't contain _i -> continue
-      else if _i != i then i <=> j;      // also, make sure that i == _i
-
-			if dp[i][1] + a < dp[j][1] { // relaxation
-				dp[j][1] = dp[i][1] + a;   // update distance
-				dp[j][2] = i;                 // update predecessor
+		for (i,j,a) in g {                    // iterate over all edges
+        if i != _i || j==s then continue; // process only edges from i
+                                          // and ommit edges to source
+			if dp[i][1] + a < dp[j][1] {        // relaxation
+				dp[j][1] = dp[i][1] + a;          // update distance
+				dp[j][2] = i;                     // update predecessor
         if !V.find(j)[1] {
-          if !V.isEmpty() && dp[j][1] < V.back() {
+          i = V.front();
+          if i && dp[j][1] <= dp[i][1] {  // SLF rule for insert
               V.push_front(j);
           }
           else {
