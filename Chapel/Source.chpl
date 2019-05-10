@@ -19,37 +19,38 @@ proc write_to_file_raw(table){
 		}
 }
 
-proc bellman_ford(table, g, source){
-	for i in table.domain{
-		table[i] = (1 << 30, -1);
-	}
-	table[source][1] = 0;
+proc bellman_ford(dp, g, source){
+// dp - vector of distances and predecessors (d, p)
+// g - graph (u, v, w)
+// source - start node
+	for i in dp.domain{
+		dp[i] = (1 << 30, -1);						// initialize with big distance
+	}																		// and no predecessor
+
+	dp[source][1] = 0;									// distance from source to source is 0
 
 	for i in g.domain {
-		for j in g {
-			var u = j[1] : int;
-			var v = j[2] : int;
-			var w = j[3] : int;
-			if (table[u][1] + w < table[v][1])
-			{
-				table[v][1] = table[u][1] + w;
-				table[v][2] = u;
-			}
-			if (table[v][1] + w < table[u][1])
-			{
-				table[u][1] = table[v][1] + w;
-				table[u][2] = v;
+		for e in g {											// for each edge in graph
+			var u = e[1] : int;
+			var v = e[2] : int;
+			var w = e[3] : int;
+			if (dp[u][1] + w < dp[v][1]){		// relaxation
+				dp[v][1] = dp[u][1] + w;			// update distance
+				dp[v][2] = u;									// update predecessor
 			}
 		}
 	}
 }
 
-proc generic(table, g, source){
+proc generic(dp, g, source){
+// dp - vector of distances and predecessors (d, p)
+// g - graph (u, v, w)
+// source - start node
 
-	for i in table.domain{
-		table[i] = (1 << 30, -1);
+	for i in dp.domain{
+		dp[i] = (1 << 30, -1);
 	}
-	table[source][1] = 0;
+	dp[source][1] = 0;
 
 	var Q = [source];
 	var is: [1.._n] bool;
@@ -60,16 +61,16 @@ proc generic(table, g, source){
 		var u = Q.pop_back();
 		is[u] = false;
 		var v: int;
-		for j in g{
-			if u == j[1] then v = j[2];
-			else if u == j[2] then v = j[1];
+		for e in g{
+			if u == e[1] then v = e[2];
+			else if u == e[2] then v = e[1];
 			else
 				continue;
 
 			var w = j[3];
-			if table[u][1] + w < table[v][1]{
-				table[v][1] = table[u][1] + w;
-				table[v][2] = u;
+			if dp[u][1] + w < dp[v][1]{
+				dp[v][1] = dp[u][1] + w;
+				dp[v][2] = u;
 				if !is[v]{
 					Q.push_back(v);
 					is[v] = true;
@@ -152,6 +153,9 @@ proc generic3(table, g, source){
 }
 
 proc slf(table, g, source){
+// dp - vector of distances and predecessors (d, p)
+// g - graph (u, v, w)
+// source - start node
 
 	for i in table.domain{
 		table[i] = (1 << 30, -1);
@@ -192,6 +196,9 @@ proc slf(table, g, source){
 }
 
 proc lll(table, g, source){
+// dp - vector of distances and predecessors (d, p)
+// g - graph (u, v, w)
+// source - start node
 
 	for i in table.domain{
 		table[i] = (1 << 30, -1);
