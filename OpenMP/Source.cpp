@@ -61,20 +61,20 @@ void print(vec &g) {
         printf("%4d : %6d    %d\n", i + 1, g[i].first, g[i].second);
 }
 
-void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int source) {
+void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // dp - vector of distances and predecessors (d, p)
 // g - graph (u, v, w)
-// source - start node
+// s - start node
     for (auto i = 0; i < _n; ++i) {
         dp[i] = make_pair(INT_MAX / 2, -1);       // initialize with big distance and no predecessor
     }
 
-    dp[source].first = 0;                         // distance from source to source is 0
+    dp[s].first = 0;                              // distance from source to source is 0
 
-    for (unsigned i = 0; i < g.size(); ++i) {     //
+    for (unsigned i = 0; i < g.size(); ++i) {
         for (const auto &e : g) {                 // for each edge in graph
-            const auto u = e[0] - 1;
-            const auto v = e[1] - 1;
+            const auto u = e[0] - 1;              // index adjust
+            const auto v = e[1] - 1;              // index adjust
             const auto w = e[2];
             if (dp[u].first + w < dp[v].first) {  // relaxation
                 dp[v].first = dp[u].first + w;    // update distance
@@ -177,7 +177,7 @@ void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
     for (auto i = 0; i < _n; ++i) {
         table[i] = make_pair(INT_MAX / 2, -1);
     }
-    
+
     table[source].first = 0;
     deque<int> Q;
     vector<bool> is(_n, false);

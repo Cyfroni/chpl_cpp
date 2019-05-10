@@ -35,10 +35,6 @@ proc bellman_ford(dp, g, s){
 				dp[j][1] = dp[i][1] + a;			// update distance
 				dp[j][2] = i;									// update predecessor
 			}
-      if (dp[j][1] + a < dp[i][1]){		// relaxation
-        dp[i][1] = dp[j][1] + a;			// update distance
-        dp[i][2] = j;									// update predecessor
-      }
 		}
 	}
 }
@@ -58,9 +54,10 @@ proc generic(dp, g, s){
 		var _i = V.pop_front();          // take from the top
 
 		for (i,j,a) in g{                // iterate over all edges
-      var contain = [i,j].find(_i);  // find only edges with _i
-      if !contain[1] then continue;  // if edge doesn't contain _i -> continue
-      else if _i != i then i <=> j;  // also, make sure that i == _i
+      if i != _i || j==s then continue;
+      //var contain = [i,j].find(_i);  // find only edges with _i
+      //if !contain[1] then continue;  // if edge doesn't contain _i -> continue
+      //else if _i != i then i <=> j;  // also, make sure that i == _i
 
 			if dp[i][1] + a < dp[j][1]{    // relaxation
 				dp[j][1] = dp[i][1] + a;     // update distance
