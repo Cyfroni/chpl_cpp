@@ -128,7 +128,7 @@ proc lll(dp, g, s){
 				dp[j][2] = i;
 				if !V.find(j)[1] {
 					V.push_back(j);
-          var sum = + reduce [x in V] x[1];
+          var sum = + reduce [x in V] dp[x][1];
 					var c = (sum * 1.01) /  V.size;
 					j = V.front();
 					while dp[j][1] > c {
