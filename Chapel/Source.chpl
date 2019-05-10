@@ -35,6 +35,10 @@ proc bellman_ford(dp, g, s){
 				dp[j][1] = dp[i][1] + a;			// update distance
 				dp[j][2] = i;									// update predecessor
 			}
+      if (dp[j][1] + a < dp[i][1]){		// relaxation
+        dp[i][1] = dp[j][1] + a;			// update distance
+        dp[i][2] = j;									// update predecessor
+      }
 		}
 	}
 }
@@ -127,14 +131,14 @@ proc lll(dp, g, s){
 				dp[j][1] = dp[i][1] + a;
 				dp[j][2] = i;
 				if !V.find(j)[1] {
-					V.push_back(j);
+					V.push_front(j);
           var sum = + reduce [x in V] dp[x][1];
 					var c = (sum * 1.01) /  V.size;
-					j = V.front();
+					j = V.back();
 					while dp[j][1] > c {
-						V.pop_front();
-						V.push_back(j);
-						j = V.front();
+						V.pop_back();
+						V.push_front(j);
+						j = V.back();
 					}
 				}
 			}
