@@ -72,7 +72,7 @@ proc generic(dp, g, s){
 proc slf(dp, g, s){
 // dp - vector of distances and predecessors (d, p)
 // g - graph (u, v, w)
-// source - start node
+// s - start node
 
   [x in dp] x = (1 << 30, -1);           // initialize with big distance
                                          // and no predecessor
@@ -105,10 +105,10 @@ proc slf(dp, g, s){
 	}
 }
 
-proc lll(table, g, source){
+proc lll(dp, g, s){
 // dp - vector of distances and predecessors (d, p)
 // g - graph (u, v, w)
-// source - start node
+// s - start node
 
   [x in dp] x = (1 << 30, -1);            // initialize with big distance
                                           // and no predecessor
