@@ -154,7 +154,7 @@ void slf(vec &dp, const vector <array<int, 3>> &g, const int s) {
                 dp[j].second = i;                 // update predecessor
                 if (!is[j]) {
                     if (!V.empty() &&             // SLF rule for insertion
-                        dp[j].first <= dp[Q.front()].first){
+                        dp[j].first <= dp[V.front()].first){
                         V.push_front(j);
                     }
                     else {
