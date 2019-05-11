@@ -214,54 +214,6 @@ void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
             }
         }
     }
-
-
-
-    for (auto i = 0; i < _n; ++i) {
-        table[i] = make_pair(INT_MAX / 2, -1);
-    }
-
-    table[source].first = 0;
-    deque<int> Q;
-    vector<bool> is(_n, false);
-    Q.push_back(source + 1);
-    is[source] = true;
-    int sum = 0;
-
-    while (!Q.empty()) {
-        const auto u = Q.back();
-        const auto u1 = u - 1;
-        Q.pop_back();
-        sum -= table[u1].first;
-        is[u1] = false;
-        int v;
-
-        for (const auto &j : g) {
-            if (u == j[0])
-                v = j[1];
-            else if (u == j[1])
-                v = j[0];
-            else continue;
-            const auto v1 = v - 1;
-            const auto w = j[2];
-            if (table[u1].first + w < table[v1].first) {
-                table[v1].first = table[u1].first + w;
-                table[v1].second = u;
-                if (!is[v1]) {
-                    Q.push_back(v);
-                    sum += table[v1].first;
-                    const double avg = (sum * 1.01) / Q.size();
-                    v = Q.front();
-                    while (table[v - 1].first > avg) {
-                        Q.pop_front();
-                        Q.push_back(v);
-                        v = Q.front();
-                    }
-                    is[v1] = true;
-                }
-            }
-        }
-    }
 }
 
 tuple<double, int, int>
