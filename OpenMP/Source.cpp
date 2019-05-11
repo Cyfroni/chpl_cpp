@@ -63,62 +63,60 @@ void print(vec &g) {
 
 void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // dp - vector of distances and predecessors (d, p)
-// g - graph (u, v, w)
+// g - graph (i, j, a)
 // s - start node
+
     for (auto i = 0; i < _n; ++i) {
-        dp[i] = make_pair(INT_MAX / 2, -1);       // initialize with big distance and no predecessor
-    }
+        dp[i] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
+    }                                             // and no predecessor
 
     dp[s].first = 0;                              // distance from source to source is 0
 
-    for (unsigned i = 0; i < g.size(); ++i) {
+    for (unsigned x = 0; i < g.size(); ++i) {
         for (const auto &e : g) {                 // for each edge in graph
-            const auto u = e[0] - 1;              // index adjust
-            const auto v = e[1] - 1;              // index adjust
-            const auto w = e[2];
-            if (dp[u].first + w < dp[v].first) {  // relaxation
-                dp[v].first = dp[u].first + w;    // update distance
-                dp[v].second = u + 1;             // update predecessor
+            const auto i = e[0] - 1;              // index adjust
+            const auto j = e[1] - 1;              // index adjust
+            const auto a = e[2];
+            if (dp[i].first + a < dp[j].first) {  // relaxation
+                dp[j].first = dp[j].first + a;    // update distance
+                dp[j].second = j + 1;             // update predecessor
             }
         }
     }
 }
 
-void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
+void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // dp - vector of distances and predecessors (d, p)
-// g - graph (u, v, w)
-// source - start node
+// g - graph (i, j, a)
+// s - start node
 
-    for (auto i = 0; i < _n; ++i){
-        table[i] = make_pair(INT_MAX / 2, -1);
-    }
+    for (auto i = 0; i < _n; ++i) {
+        dp[i] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
+    }                                             // and no predecessor
 
-    table[source].first = 0;
-    vector<int> Q;
-    vector<bool> is(_n, false);
-    Q.push_back(source + 1);
-    is[source] = true;
+    dp[s].first = 0;                      // distance from source to source is 0
+    vector<int> V;
+    vector<bool> is(_n, false);                   // table of existance in V
+    V.push_back(s + 1);                      // Initialize queue with source node
+    is[s] = true;                            // mark it in the table
 
-    while (!Q.empty()) {
-        int u = Q.back();
-        Q.pop_back();
-        is[u - 1] = false;
-        int v;
-        for (const auto &j : g) {
-            if (u == j[0])
-                v = j[1];
-            else if (u == j[1])
-                v = j[0];
-            else continue;
-            const auto u1 = u - 1;
-            const auto v1 = v - 1;
-            const auto w = j[2];
-            if (table[u1].first + w < table[v1].first) {
-                table[v1].first = table[u1].first + w;
-                table[v1].second = u;
-                if (!is[v1]) {
-                    Q.push_back(v);
-                    is[v1] = true;
+    while (!V.empty()) {
+        int _i = V.front() - 1;                         // take from the top
+        V.pop_front();
+        is[_i] = false;                        // mark it
+
+        for (const auto &e : g) {
+            const auto i = e[0] - 1
+            const auto j = e[1] - 1;
+            const auto w = e[2];
+            if (i != _i || j==s) continue;
+
+            if (table[i].first + a < table[j].first) {
+                table[j].first = table[i].first + a;
+                table[j].second = i;
+                if (!is[j]) {
+                    Q.push_back(j + 1);
+                    is[j] = true;
                 }
             }
         }
@@ -127,8 +125,8 @@ void generic(vec &table, const vector <array<int, 3>> &g, const int source) {
 
 void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
 // dp - vector of distances and predecessors (d, p)
-// g - graph (u, v, w)
-// source - start node
+// g - graph (i, j, a)
+// s - start node
 
     for (auto i = 0; i < _n; ++i) {
         table[i] = make_pair(INT_MAX / 2, -1);
@@ -171,8 +169,8 @@ void slf(vec &table, const vector <array<int, 3>> &g, const int source) {
 
 void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
 // dp - vector of distances and predecessors (d, p)
-// g - graph (u, v, w)
-// source - start node
+// g - graph (i, j, a)
+// s - start node
 
     for (auto i = 0; i < _n; ++i) {
         table[i] = make_pair(INT_MAX / 2, -1);
