@@ -66,13 +66,13 @@ void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // g - graph (i, j, a)
 // s - start node
 
-    for (auto i = 0; i < _n; ++i) {
-        dp[i] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
+    for (auto x = 0; x < _n; ++x) {
+        dp[x] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
     }                                             // and no predecessor
 
     dp[s].first = 0;                              // distance from source to source is 0
 
-    for (unsigned x = 0; i < g.size(); ++i) {
+    for (unsigned x = 0; x < g.size(); ++x) {
         for (const auto &e : g) {                 // for each edge in graph
             const auto i = e[0] - 1;              // index adjust
             const auto j = e[1] - 1;              // index adjust
@@ -90,18 +90,18 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // g - graph (i, j, a)
 // s - start node
 
-    for (auto i = 0; i < _n; ++i) {
-        dp[i] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
+    for (auto x = 0; i < _n; ++i) {
+        dp[x] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
     }                                             // and no predecessor
 
     dp[s].first = 0;                      // distance from source to source is 0
     vector<int> V;
     vector<bool> is(_n, false);                   // table of existance in V
-    V.push_back(s + 1);                      // Initialize queue with source node
+    V.push_back(s);                      // Initialize queue with source node
     is[s] = true;                            // mark it in the table
 
     while (!V.empty()) {
-        int _i = V.front() - 1;                         // take from the top
+        int _i = V.front();                         // take from the top
         V.pop_front();
         is[_i] = false;                        // mark it
 
@@ -115,7 +115,7 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
                 table[j].first = table[i].first + a;
                 table[j].second = i;
                 if (!is[j]) {
-                    Q.push_back(j + 1);
+                    Q.push_back(j);
                     is[j] = true;
                 }
             }
