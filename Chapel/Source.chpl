@@ -87,9 +87,8 @@ proc slf(dp, g, s){
 				dp[j][1] = dp[i][1] + a;          // update distance
 				dp[j][2] = i;                     // update predecessor
         if !V.find(j)[1] {
-          i = V.front();                  // SLF rule for insertion
-          if !V.isEmpty() && dp[j][1] <= dp[i][1] {
-              V.push_front(j);
+          if !V.isEmpty() && dp[j][1] <= dp[V.front()][1] {
+              V.push_front(j);            // SLF rule for insertion
           }
           else {
               V.push_back(j);
@@ -120,11 +119,11 @@ proc lll(dp, g, s){
         dp[j][1] = dp[i][1] + a;          // update distance
         dp[j][2] = i;                     // update predecessor
 				if !V.find(j)[1] {
-					V.push_front(j);                // LLL rule for insertion
+					V.push_back(j);
           var sum = + reduce [x in V] dp[x][1];
 					var c = (sum * 1.01) /  V.size;
 					i = V.front();
-					while dp[i][1] > c {
+					while dp[i][1] > c {           // LLL rule for rearrangement
 						V.pop_front();
 						V.push_back(i);
 						i = V.front();
