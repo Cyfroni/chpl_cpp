@@ -26,7 +26,6 @@ proc bellman_ford(dp, g, s){
 
   [x in dp] x = (1 << 30, -1);        // initialize with big distance
                                       // and no predecessor
-
 	dp[s][1] = 0;									      // distance from source to source is 0
 
 	for x in g.domain {
@@ -50,7 +49,6 @@ proc generic(dp, g, s){
 	var V = [s];                          // Initialize queue with source node
 
 	 while !V.isEmpty(){
-
 		var _i = V.pop_front();             // take from the top
 
 		for (i,j,a) in g{                   // iterate over all edges
@@ -187,6 +185,6 @@ proc main() {
 	/* var writer = open("time.txt", iomode.cw).writer();
 	writer.write(elapsedTime); */
 
-	write_to_file_raw(table);
+	//write_to_file_raw(table);
 
 }
