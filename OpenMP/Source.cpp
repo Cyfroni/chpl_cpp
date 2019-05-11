@@ -199,15 +199,15 @@ void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
                 if (!is[j]) {
                     V.push_back(j);               // insertion like in generic alg.
                     is[j] = true;
-                    var sum = 0;
+                    int sum = 0;
                     for (int x=0; x < V.size(); ++x){
                       sum += dp[j].first;         // sum of all node labels in V
                     }
-                    double c = sum * / V.size();  // c - average node label in V
-                    var f = V.front();
+                    double c = sum / V.size();    // c - average node label in V
+                    int f = V.front();
                     while (dp[f].first > c) {     // LLL rule for rearrangement
                         V.pop_front();
-                        V.push_back(v);
+                        V.push_back(f);
                         f = V.front();
                     }
                 }
