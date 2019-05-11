@@ -28,7 +28,7 @@ proc bellman_ford(dp, g, s){
                                       // and no predecessor
 	dp[s][1] = 0;									      // distance from source to source is 0
 
-	for x in g.domain {
+	for x in 1.._n {
 		for (i,j,a) in g {								// for each edge in graph
 			if (dp[i][1] + a < dp[j][1]){		// relaxation
 				dp[j][1] = dp[i][1] + a;			// update distance

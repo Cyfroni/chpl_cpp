@@ -72,14 +72,14 @@ void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int s) {
 
     dp[s].first = 0;                              // distance from source to source is 0
 
-    for (unsigned x = 0; x < g.size(); ++x) {
+    for (unsigned x = 0; x < _n; ++x) {
         for (const auto &e : g) {                 // for each edge in graph
             const auto i = e[0] - 1;              // index adjust
             const auto j = e[1] - 1;              // index adjust
             const auto a = e[2];
             if (dp[i].first + a < dp[j].first) {  // relaxation
-                dp[j].first = dp[j].first + a;    // update distance
-                dp[j].second = j + 1;             // update predecessor
+                dp[j].first = dp[i].first + a;    // update distance
+                dp[j].second = i + 1;             // update predecessor
             }
         }
     }
@@ -113,7 +113,7 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
                                                   // and ommit edges to source
             if (dp[i].first + a < dp[j].first) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
-                dp[j].second = i;                 // update predecessor
+                dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
                     V.push_back(j);               // add v to V if it's not there already.
                     is[j] = true;
@@ -151,7 +151,7 @@ void slf(vec &dp, const vector <array<int, 3>> &g, const int s) {
                                                   // and ommit edges to source
             if (dp[i].first + a < dp[j].first) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
-                dp[j].second = i;                 // update predecessor
+                dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
                     if (!V.empty() &&             // SLF rule for insertion
                         dp[j].first <= dp[V.front()].first){
@@ -195,7 +195,7 @@ void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
                                                   // and ommit edges to source
             if (dp[i].first + a < dp[j].first) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
-                dp[j].second = i;                 // update predecessor
+                dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
                     V.push_back(j);               // insertion like in generic alg.
                     is[j] = true;
