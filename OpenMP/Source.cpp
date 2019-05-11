@@ -111,9 +111,9 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
             const auto a = e[2];
             if (i != _i || j==s) continue;
 
-            if (table[i].first + a < table[j].first) {
-                table[j].first = table[i].first + a;
-                table[j].second = i;
+            if (dp[i].first + a < dp[j].first) {
+                dp[j].first = dp[i].first + a;
+                dp[j].second = i;
                 if (!is[j]) {
                     V.push_back(j);
                     is[j] = true;
