@@ -173,6 +173,7 @@ proc main() {
 	var line : string;
 	while reader.read(line){
     var x = line.split() : int;
+    if x.size != 3 then break;
 		graph.push_back((x[1],x[2],x[3]));
 	}
   reader.close();
