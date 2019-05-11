@@ -72,23 +72,24 @@ proc slf(dp, g, s){
 // g - graph (u, v, w)
 // s - start node
 
-  [x in dp] x = (1 << 30, -1);            // initialize with big distance
-                                          // and no predecessor
-	dp[s][1] = 0;                           // distance from source to source is 0
-	var V = [s];                            // Initialize queue with source node
+  [x in dp] x = (1 << 30, -1);               // initialize with big distance
+                                             // and no predecessor
+	dp[s][1] = 0;                              // distance from source to source is 0
+	var V = [s];                               // Initialize queue with source node
 
 	while !V.isEmpty() {
-		var _i = V.pop_front();               // take from the top
+		var _i = V.pop_front();                  // take from the top
 
-		for (i,j,a) in g {                    // iterate over all edges
-        if i != _i || j==s then continue; // process only edges from i
-                                          // and ommit edges to source
-			if dp[i][1] + a < dp[j][1] {        // relaxation
-				dp[j][1] = dp[i][1] + a;          // update distance
-				dp[j][2] = i;                     // update predecessor
+		for (i,j,a) in g {                       // iterate over all edges
+        if i != _i || j==s then continue;    // process only edges from i
+                                             // and ommit edges to source
+			if dp[i][1] + a < dp[j][1] {           // relaxation
+				dp[j][1] = dp[i][1] + a;             // update distance
+				dp[j][2] = i;                        // update predecessor
         if !V.find(j)[1] {
-          if !V.isEmpty() && dp[j][1] <= dp[V.front()][1] {
-              V.push_front(j);            // SLF rule for insertion
+          if (!V.isEmpty() &&
+             dp[j][1] <= dp[V.front()][1]) { // SLF rule for insertion
+              V.push_front(j);
           }
           else {
               V.push_back(j);
@@ -104,29 +105,29 @@ proc lll(dp, g, s){
 // g - graph (u, v, w)
 // s - start node
 
-  [x in dp] x = (1 << 30, -1);            // initialize with big distance
-                                          // and no predecessor
-  dp[s][1] = 0;                           // distance from source to source is 0
-  var V = [s];                            // Initialize queue with source node
+  [x in dp] x = (1 << 30, -1);                   // initialize with big distance
+                                                 // and no predecessor
+  dp[s][1] = 0;                                  // distance from source to source is 0
+  var V = [s];                                   // Initialize queue with source node
 
 	while !V.isEmpty(){
 		var _i = V.pop_front();
 
-    for (i,j,a) in g {                    // iterate over all edges
-      if i != _i || j==s then continue;   // process only edges from i
-                                          // and ommit edges to source
-      if dp[i][1] + a < dp[j][1] {        // relaxation
-        dp[j][1] = dp[i][1] + a;          // update distance
-        dp[j][2] = i;                     // update predecessor
+    for (i,j,a) in g {                           // iterate over all edges
+      if i != _i || j==s then continue;          // process only edges from i
+                                                 // and ommit edges to source
+      if dp[i][1] + a < dp[j][1] {               // relaxation
+        dp[j][1] = dp[i][1] + a;                 // update distance
+        dp[j][2] = i;                            // update predecessor
 				if !V.find(j)[1] {
-					V.push_back(j);
-          var sum = + reduce [x in V] dp[x][1];
-					var c = (sum * 1.01) /  V.size;
-					i = V.front();
-					while dp[i][1] > c {           // LLL rule for rearrangement
+					V.push_back(j);                        // insertion like in generic alg.
+          var sum = + reduce [x in V] dp[x][1];  // sum of all node labels in V
+					var c = sum / V.size;                  // c - average node label in V
+					var f = V.front();
+					while dp[f][1] > c {                   // LLL rule for rearrangement
 						V.pop_front();
-						V.push_back(i);
-						i = V.front();
+						V.push_back(f);
+						f = V.front();
 					}
 				}
 			}
