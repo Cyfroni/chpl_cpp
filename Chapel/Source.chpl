@@ -170,8 +170,9 @@ proc main() {
   var reader = open(file, iomode.r).reader();
   reader.read(_n);
   var graph: [1..0] (3*int);
-	var x : [1..3] int;
-	while reader.read(x){
+	var line : string;
+	while reader.read(line){
+    var x = line.split() : int;
 		graph.push_back((x[1],x[2],x[3]));
 	}
   reader.close();
