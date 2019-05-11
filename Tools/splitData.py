@@ -1,6 +1,6 @@
 import random
 
-LINES_AMOUNT = 375 # 375
+LINES_AMOUNT = 375  # 375
 
 with open('wdbc_reformatted.data', 'r+') as f:
     content = f.read()
@@ -18,8 +18,8 @@ with open('wdbc_reformatted.data', 'r+') as f:
     m_length = len(lines['M'])
     b_length = len(lines['B'])
 
-    m_learn = LINES_AMOUNT/5
-    b_learn = LINES_AMOUNT - m_learn
+    m_learn = int(LINES_AMOUNT / 5)
+    b_learn = int(LINES_AMOUNT - m_learn)
 
     print(m_learn)
     print(b_learn)
