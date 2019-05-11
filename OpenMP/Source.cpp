@@ -167,10 +167,55 @@ void slf(vec &dp, const vector <array<int, 3>> &g, const int s) {
     }
 }
 
-void lll(vec &table, const vector <array<int, 3>> &g, const int source) {
+void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // dp - vector of distances and predecessors (d, p)
 // g - graph (i, j, a)
 // s - start node
+
+    for (auto x = 0; x < _n; ++x) {
+        dp[x] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
+    }                                             // and no predecessor
+
+    dp[s].first = 0;                              // distance from source to source is 0
+    deque<int> V;
+    vector<bool> is(_n, false);                   // table of existance in V
+    V.push_back(s);                               // Initialize queue with source node
+    is[s] = true;                                 // mark it in the table
+
+    while (!V.empty()) {
+        int _i = V.front();                       // take from the top
+        V.pop_front();
+        is[_i] = false;                           // mark it
+
+        for (const auto &e : g) {
+            const auto i = e[0] - 1;
+            const auto j = e[1] - 1;
+            const auto a = e[2];
+            if (i != _i || j==s) continue;        // process only edges from i
+                                                  // and ommit edges to source
+            if (dp[i].first + a < dp[j].first) {  // relaxation
+                dp[j].first = dp[i].first + a;    // update distance
+                dp[j].second = i;                 // update predecessor
+                if (!is[j]) {
+                    V.push_back(j);               // insertion like in generic alg.
+                    is[j] = true;
+                    var sum = 0;
+                    for (int x=0; x < V.size(); ++x){
+                      sum += dp[j].first;         // sum of all node labels in V
+                    }
+                    double c = sum * / V.size();  // c - average node label in V
+                    var f = V.front();
+                    while (dp[f].first > c) {     // LLL rule for rearrangement
+                        V.pop_front();
+                        V.push_back(v);
+                        f = V.front();
+                    }
+                }
+            }
+        }
+    }
+
+
 
     for (auto i = 0; i < _n; ++i) {
         table[i] = make_pair(INT_MAX / 2, -1);
