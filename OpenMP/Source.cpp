@@ -90,12 +90,12 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // g - graph (i, j, a)
 // s - start node
 
-    for (auto x = 0; i < _n; ++i) {
+    for (auto x = 0; x < _n; ++x) {
         dp[x] = make_pair(INT_MAX / 2, -1);       // initialize with big distance
     }                                             // and no predecessor
 
     dp[s].first = 0;                      // distance from source to source is 0
-    vector<int> V;
+    deque<int> V;
     vector<bool> is(_n, false);                   // table of existance in V
     V.push_back(s);                      // Initialize queue with source node
     is[s] = true;                            // mark it in the table
@@ -106,16 +106,16 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
         is[_i] = false;                        // mark it
 
         for (const auto &e : g) {
-            const auto i = e[0] - 1
+            const auto i = e[0] - 1;
             const auto j = e[1] - 1;
-            const auto w = e[2];
+            const auto a = e[2];
             if (i != _i || j==s) continue;
 
             if (table[i].first + a < table[j].first) {
                 table[j].first = table[i].first + a;
                 table[j].second = i;
                 if (!is[j]) {
-                    Q.push_back(j);
+                    V.push_back(j);
                     is[j] = true;
                 }
             }
