@@ -173,10 +173,9 @@ proc main() {
 	var x : [1..3] int;
   try{
 	  while reader.read(x){
-	  graph.push_back((x[1],x[2],x[3]));
-	} catch {
-    writeln(graph.size);
-  }
+	    graph.push_back((x[1],x[2],x[3]));
+    }
+  } catch {}
   reader.close();
 
   var table: [1.._n, 1.._n] (int, int);
