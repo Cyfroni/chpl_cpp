@@ -49,7 +49,7 @@ proc main() {
 
   var dnnData = dnnLine.split(',');
 
-  dnn.push_back(dataAmount : int); // niepelne dane
+  dnn.push_back(dataAmount : int);
   dnn.push_back(dataLenght : int - 1);
   for item in dnnData{
     dnn.push_back(item : int);
@@ -59,7 +59,7 @@ proc main() {
   var y_train : [1..dnn[1], 1..dnn[5]] real;
   var x_train : [1..dnn[1], 1..dnn[2]] real;
   var k = 1;
-  //writeln("reading..");
+
 	while reader.read(line){
     var data = line.split(',');
       var l = 1;
@@ -95,7 +95,7 @@ proc main() {
   var W3 : [1..dnn[4], 1..dnn[5]] real;
 
   use Random;
-  //writeln('randomizing..');
+
   fillRandom(W1);
   W1 = [i in W1] i / 20.0;
   fillRandom(W2);
@@ -111,7 +111,7 @@ proc main() {
 
   fillRandom(rand_indx);
   rand_indx = [indx in rand_indx] indx * (trainData-BATCH_SIZE);
-  //writeln('learning..');
+
   for i in 1..10000 {
     var indx = rand_indx[i] : int;
 

@@ -241,8 +241,6 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     threads = atoi(argv[3]);
     int trainData = 375;
 
-    //cout << "<OpenMP>\n\n";
-    //cout << "Loading data ...\n";
     vector<float> X_train;
     vector<float> y_train;
     ifstream file_in("../all.data", fstream::in);
@@ -310,7 +308,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     vector<float> W3 = random_vector(dnn[3] * dnn[4]);
 
     const auto t1 = chrono::high_resolution_clock::now();
-    //cout << "Training the model ...\n";
+
     for (unsigned i = 0; i < 10000; ++i) {
 
         // Building batches of input variables (X) and labels (y)
@@ -391,6 +389,6 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
     }
     const auto t2 = chrono::high_resolution_clock::now();
     chrono::duration<double, std::milli> fp_ms = t2 - t1;
-    cout << fp_ms.count() << endl;
+    cout << fp_ms.count() / 1000.0 << endl;
     return 0;
 }
