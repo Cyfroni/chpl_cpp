@@ -101,6 +101,7 @@ if (p==1) {
       );
     }
 
+
     var con_violQ : real;
     ft = 0;
     var alfa : real = n/(k+p);
@@ -120,9 +121,5 @@ if (p==1) {
   }
 }
 
-/* writeln('Powell - ', n);
-writeln('-----------------------------------');
-writeln('xopt =\n', xopt);
-writeln('-----------------------------------');
-writeln('fopt = ', ft); */
+writeln(n, " ", p, "")
 writeln(timer.elapsed());
