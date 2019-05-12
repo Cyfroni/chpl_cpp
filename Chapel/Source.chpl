@@ -30,7 +30,7 @@ proc bellman_ford(dp, g, s){
 
 	for x in 1.._n {
 		for (i,j,a) in g {								// for each edge in graph
-			if (dp[i][1] + a < dp[j][1]){		// relaxation
+			if dp[j][1] > dp[i][1] + a {		// relaxation
 				dp[j][1] = dp[i][1] + a;			// update distance
 				dp[j][2] = i;									// update predecessor
 			}
@@ -54,7 +54,7 @@ proc generic(dp, g, s){
 		for (i,j,a) in g{                   // iterate over all edges
       if i != _i || j==s then continue; // process only edges from i
                                         // and ommit edges to source
-			if dp[i][1] + a < dp[j][1]{       // relaxation
+			if dp[j][1] > dp[i][1] + a {			// relaxation
 				dp[j][1] = dp[i][1] + a;        // update distance
 				dp[j][2] = i;                   // update predecessor
 				if !V.find(j)[1] {
@@ -81,7 +81,7 @@ proc slf(dp, g, s){
 		for (i,j,a) in g {                       // iterate over all edges
         if i != _i || j==s then continue;    // process only edges from i
                                              // and ommit edges to source
-			if dp[i][1] + a < dp[j][1] {           // relaxation
+			if dp[j][1] > dp[i][1] + a {					 // relaxation
 				dp[j][1] = dp[i][1] + a;             // update distance
 				dp[j][2] = i;                        // update predecessor
         if !V.find(j)[1] {
@@ -114,7 +114,7 @@ proc lll(dp, g, s){
     for (i,j,a) in g {                           // iterate over all edges
       if i != _i || j==s then continue;          // process only edges from i
                                                  // and ommit edges to source
-      if dp[i][1] + a < dp[j][1] {               // relaxation
+			if dp[j][1] > dp[i][1] + a {					 		 // relaxation
         dp[j][1] = dp[i][1] + a;                 // update distance
         dp[j][2] = i;                            // update predecessor
 				if !V.find(j)[1] {

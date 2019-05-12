@@ -77,7 +77,7 @@ void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int s) {
             const auto i = e[0] - 1;              // index adjust
             const auto j = e[1] - 1;              // index adjust
             const auto a = e[2];
-            if (dp[i].first + a < dp[j].first) {  // relaxation
+            if (dp[j].first > dp[i].first + a) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
             }
@@ -111,7 +111,7 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
             const auto a = e[2];
             if (i != _i || j==s) continue;        // process only edges from i
                                                   // and ommit edges to source
-            if (dp[i].first + a < dp[j].first) {  // relaxation
+            if (dp[j].first > dp[i].first + a) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
@@ -149,7 +149,7 @@ void slf(vec &dp, const vector <array<int, 3>> &g, const int s) {
             const auto a = e[2];
             if (i != _i || j==s) continue;        // process only edges from i
                                                   // and ommit edges to source
-            if (dp[i].first + a < dp[j].first) {  // relaxation
+            if (dp[j].first > dp[i].first + a) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
@@ -193,7 +193,7 @@ void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
             const auto a = e[2];
             if (i != _i || j==s) continue;        // process only edges from i
                                                   // and ommit edges to source
-            if (dp[i].first + a < dp[j].first) {  // relaxation
+            if (dp[j].first > dp[i].first + a) {  // relaxation
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
