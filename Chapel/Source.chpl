@@ -35,8 +35,8 @@ proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ 
 
   if (k==1){
     for j in y.domain {
-    var jabs = (i-1)*ni + j;
-    y[j] = if jabs % 2 == 0 then -0.5 - jabs else 0;
+      var jabs = (i-1)*ni + j;
+      y[j] = if jabs % 2 == 0 then -0.5 - jabs else 0;
     }
     to_c_array(y, x);
   } else {
@@ -68,7 +68,7 @@ var fopt : [1..p] real;
 var lamopt : chpl_matrix;
 var ft : real;
 
-writeln("<Chapel>\nSolving Powell20 problem for: n = ", n,', p = ', p, '...');
+//writeln("<Chapel>\nSolving Powell20 problem for: n = ", n,', p = ', p, '...');
 
 use Time;
 var timer : Timer;
@@ -114,8 +114,7 @@ if (p==1) {
        lamb[i] = max(0, lamb[i] + alfa * gi);
     }
     dist_x = sqrt(+ reduce (+ reduce (xopt - xprev)**2));
-    var con_viol=sqrt(con_violQ);
-    //writeln(k, ' ', ft, ' ', con_viol, ' ', dist_x);
+    var con_viol = sqrt(con_violQ);
     xprev = xopt;
     k+=1;
   }
@@ -126,6 +125,4 @@ writeln('-----------------------------------');
 writeln('xopt =\n', xopt);
 writeln('-----------------------------------');
 writeln('fopt = ', ft); */
-writeln('-----------------------------------');
-writeln('Time od calculations: ', timer.elapsed(), ' s');
-writeln('-----------------------------------');
+writeln(timer.elapsed());

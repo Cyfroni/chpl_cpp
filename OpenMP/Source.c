@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
         for (j = 0; j <= ni; j++)
             xprev[i][j] = 0.;
     }
-    printf("<OpenMP>\nSolving Powell20 problem for: n=%d, p=%d (%d)...\n", n, p, threads);
+    //printf("<OpenMP>\nSolving Powell20 problem for: n=%d, p=%d (%d)...\n", n, p, threads);
     t0 = omp_get_wtime();
     if (p == 1) {
 
@@ -197,8 +197,7 @@ int main(int argc, char **argv) {
             }
             dist_x = Eucl_dist(p, ni, xopt, xprev);
             con_viol = sqrt(con_violQ);
-            //printf(" k= %d, fun= %7.3f, cons_viol= %7.6f, dist_x= %7.6f\n",
-                   //k, ft, con_viol, dist_x);
+
             for (i = 1; i <= p; i++)
                 for (j = 1; j <= ni; j++) xprev[i][j] = xopt[i][j];
             k = k + 1;
@@ -219,9 +218,8 @@ int main(int argc, char **argv) {
     // printf("\n");
     // printf("-----------------------------------\n");
     // printf("fopt =%f\n", ft);
-    printf("-----------------------------------\n");
-    printf(" Time od calculations: %f s\n", tf - t0);
-    printf("-----------------------------------\n");
+    printf("%f\n", tf - t0);
+
     for (i = 0; i <= p; i++) {
         free(xopt[i]);
         free(xprev[i]);
