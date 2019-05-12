@@ -8,4 +8,10 @@ forall i in x {
 	i *= 2;
 }
 
-writeln(x);
+[i in x with (+ reduce sum)] sum += i;
+
+forall i in x with (+ reduce sum) {
+	sum += i;
+}
+
+sum = + reduce x;
