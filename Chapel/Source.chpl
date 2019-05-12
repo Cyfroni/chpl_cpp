@@ -46,10 +46,10 @@ proc generic(dp, g, s){
   [x in dp] x = (1 << 30, -1);          // initialize with big distance
                                         // and no predecessor
 	dp[s][1] = 0;                         // distance from source to source is 0
-	var V = [s];                          // initialize queue with source node
+	var Q = [s];                          // initialize queue with source node
 
-	 while !V.isEmpty(){
-		var _i = V.pop_front();             // take from the top
+	 while !Q.isEmpty(){
+		var _i = Q.pop_front();             // take from the top
 
 		for (i,j,a) in g{                   // iterate over all edges
       if i != _i || j==s then continue; // process only edges from i
@@ -57,8 +57,8 @@ proc generic(dp, g, s){
 			if dp[j][1] > dp[i][1] + a {			// relaxation
 				dp[j][1] = dp[i][1] + a;        // update distance
 				dp[j][2] = i;                   // update predecessor
-				if !V.find(j)[1] {
-					V.push_back(j);               // add v to V if it's not there already.
+				if !Q.find(j)[1] {
+					Q.push_back(j);               // add v to Q if it's not there already.
 				}
 			}
 		}
@@ -73,10 +73,10 @@ proc slf(dp, g, s){
   [x in dp] x = (1 << 30, -1);               // initialize with big distance
                                              // and no predecessor
 	dp[s][1] = 0;                              // distance from source to source is 0
-	var V = [s];                               // initialize queue with source node
+	var Q = [s];                               // initialize queue with source node
 
-	while !V.isEmpty() {
-		var _i = V.pop_front();                  // take from the top
+	while !Q.isEmpty() {
+		var _i = Q.pop_front();                  // take from the top
 
 		for (i,j,a) in g {                       // iterate over all edges
         if i != _i || j==s then continue;    // process only edges from i
@@ -84,13 +84,13 @@ proc slf(dp, g, s){
 			if dp[j][1] > dp[i][1] + a {					 // relaxation
 				dp[j][1] = dp[i][1] + a;             // update distance
 				dp[j][2] = i;                        // update predecessor
-        if !V.find(j)[1] {
-          if (!V.isEmpty() &&
-             dp[j][1] <= dp[V.front()][1]) { // SLF rule for insertion
-              V.push_front(j);
+        if !Q.find(j)[1] {
+          if (!Q.isEmpty() &&
+             dp[j][1] <= dp[Q.front()][1]) { // SLF rule for insertion
+              Q.push_front(j);
           }
           else {
-              V.push_back(j);
+              Q.push_back(j);
           }
         }
 			}
@@ -106,10 +106,10 @@ proc lll(dp, g, s){
   [x in dp] x = (1 << 30, -1);                   // initialize with big distance
                                                  // and no predecessor
   dp[s][1] = 0;                                  // distance from source to source is 0
-  var V = [s];                                   // initialize queue with source node
+  var Q = [s];                                   // initialize queue with source node
 
-	while !V.isEmpty(){
-		var _i = V.pop_front();
+	while !Q.isEmpty(){
+		var _i = Q.pop_front();
 
     for (i,j,a) in g {                           // iterate over all edges
       if i != _i || j==s then continue;          // process only edges from i
@@ -117,15 +117,15 @@ proc lll(dp, g, s){
 			if dp[j][1] > dp[i][1] + a {					 		 // relaxation
         dp[j][1] = dp[i][1] + a;                 // update distance
         dp[j][2] = i;                            // update predecessor
-				if !V.find(j)[1] {
-					V.push_back(j);                        // insertion like in generic alg.
-          var sum = + reduce [x in V] dp[x][1];  // sum of all node labels in V
-					var c = sum / V.size;                  // c - average node label in V
-					var f = V.front();
+				if !Q.find(j)[1] {
+					Q.push_back(j);                        // insertion like in generic alg.
+          var sum = + reduce [x in Q] dp[x][1];  // sum of all node labels in Q
+					var c = sum / Q.size;                  // c - average node label in Q
+					var f = Q.front();
 					while dp[f][1] > c {                   // LLL rule for rearrangement
-						V.pop_front();
-						V.push_back(f);
-						f = V.front();
+						Q.pop_front();
+						Q.push_back(f);
+						f = Q.front();
 					}
 				}
 			}

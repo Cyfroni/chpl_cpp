@@ -95,14 +95,14 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
     }                                             // and no predecessor
 
     dp[s].first = 0;                              // distance from source to source is 0
-    deque<int> V;
-    vector<bool> is(_n, false);                   // table of existance in V
-    V.push_back(s);                               // Initialize queue with source node
+    deque<int> Q;
+    vector<bool> is(_n, false);                   // table of existance in Q
+    Q.push_back(s);                               // Initialize queue with source node
     is[s] = true;                                 // mark it in the table
 
-    while (!V.empty()) {
-        int _i = V.front();                       // take from the top
-        V.pop_front();
+    while (!Q.empty()) {
+        int _i = Q.front();                       // take from the top
+        Q.pop_front();
         is[_i] = false;                           // mark it
 
         for (const auto &e : g) {
@@ -115,7 +115,7 @@ void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
-                    V.push_back(j);               // add v to V if it's not there already.
+                    Q.push_back(j);               // add v to Q if it's not there already.
                     is[j] = true;
                 }
             }
@@ -133,14 +133,14 @@ void slf(vec &dp, const vector <array<int, 3>> &g, const int s) {
     }                                             // and no predecessor
 
     dp[s].first = 0;                              // distance from source to source is 0
-    deque<int> V;
-    vector<bool> is(_n, false);                   // table of existance in V
-    V.push_back(s);                               // Initialize queue with source node
+    deque<int> Q;
+    vector<bool> is(_n, false);                   // table of existance in Q
+    Q.push_back(s);                               // Initialize queue with source node
     is[s] = true;                                 // mark it in the table
 
-    while (!V.empty()) {
-        int _i = V.front();                       // take from the top
-        V.pop_front();
+    while (!Q.empty()) {
+        int _i = Q.front();                       // take from the top
+        Q.pop_front();
         is[_i] = false;                           // mark it
 
         for (const auto &e : g) {
@@ -153,12 +153,12 @@ void slf(vec &dp, const vector <array<int, 3>> &g, const int s) {
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
-                    if (!V.empty() &&             // SLF rule for insertion
-                        dp[j].first <= dp[V.front()].first){
-                        V.push_front(j);
+                    if (!Q.empty() &&             // SLF rule for insertion
+                        dp[j].first <= dp[Q.front()].first){
+                        Q.push_front(j);
                     }
                     else {
-                        V.push_back(j);
+                        Q.push_back(j);
                     }
                     is[j] = true;
                 }
@@ -177,14 +177,14 @@ void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
     }                                             // and no predecessor
 
     dp[s].first = 0;                              // distance from source to source is 0
-    deque<int> V;
-    vector<bool> is(_n, false);                   // table of existance in V
-    V.push_back(s);                               // Initialize queue with source node
+    deque<int> Q;
+    vector<bool> is(_n, false);                   // table of existance in Q
+    Q.push_back(s);                               // Initialize queue with source node
     is[s] = true;                                 // mark it in the table
 
-    while (!V.empty()) {
-        int _i = V.front();                       // take from the top
-        V.pop_front();
+    while (!Q.empty()) {
+        int _i = Q.front();                       // take from the top
+        Q.pop_front();
         is[_i] = false;                           // mark it
 
         for (const auto &e : g) {
@@ -197,18 +197,18 @@ void lll(vec &dp, const vector <array<int, 3>> &g, const int s) {
                 dp[j].first = dp[i].first + a;    // update distance
                 dp[j].second = i + 1;             // update predecessor
                 if (!is[j]) {
-                    V.push_back(j);               // insertion like in generic alg.
+                    Q.push_back(j);               // insertion like in generic alg.
                     is[j] = true;
                     int sum = 0;
-                    for (int x=0; x < V.size(); ++x){
-                      sum += dp[j].first;         // sum of all node labels in V
+                    for (int x=0; x < Q.size(); ++x){
+                      sum += dp[j].first;         // sum of all node labels in Q
                     }
-                    double c = sum / V.size();    // c - average node label in V
-                    int f = V.front();
+                    double c = sum / Q.size();    // c - average node label in Q
+                    int f = Q.front();
                     while (dp[f].first > c) {     // LLL rule for rearrangement
-                        V.pop_front();
-                        V.push_back(f);
-                        f = V.front();
+                        Q.pop_front();
+                        Q.push_back(f);
+                        f = Q.front();
                     }
                 }
             }
