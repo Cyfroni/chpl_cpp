@@ -73,6 +73,7 @@ proc main() {
         y_train[k, ..] = [0.0, 1.0];
       }
       k += 1;
+      if k==570 break;
 	}
   reader.close();
 
