@@ -72,9 +72,9 @@ proc main() {
       } else {
         y_train[k, ..] = [0.0, 1.0];
       }
-      if k==dataAmount then break;
+      if k == dnn[1] then break;
       k += 1;
-      
+
 	}
   reader.close();
 
