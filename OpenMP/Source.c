@@ -36,7 +36,7 @@ void local_prob_init(double x[], double low[], double hi[], void *param_) {
     int j, jabs;
 
     if (k == 1)
-        for (j = 1; j <= ni; j++) {
+        for (j = 1; j <= ni; j++) {         // initialize Powell20
             jabs = (i - 1) * ni + j;
             if (jabs % 2 == 0)
                 x[j] = -0.5 - jabs;
@@ -44,12 +44,12 @@ void local_prob_init(double x[], double low[], double hi[], void *param_) {
                 x[j] = 0;
         }
     else
-        for (j = 1; j <= ni; j++)
+        for (j = 1; j <= ni; j++)          // or get from previous iteration
             x[j] = xopt[i][j];
 
     for (j = 1; j <= ni; j++) {
-        low[j] = -bigN;
-        hi[j] = bigN;
+        low[j] = -bigN;                    // fill with minimum values
+        hi[j] = bigN;                      // fill with maximum values
     }
 }
 

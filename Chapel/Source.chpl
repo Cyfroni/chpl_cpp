@@ -34,17 +34,17 @@ proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ 
   var y : chpl_array;
 
   if (k==1){
-    for j in y.domain {
+    for j in y.domain {                                // initialize Powell20
       var jabs = (i-1)*ni + j;
       y[j] = if jabs % 2 == 0 then -0.5 - jabs else 0;
     }
     to_c_array(y, x);
   } else {
-    x = xopt[i];
+    x = xopt[i];                                       // or get from previous iteration
   }
 
-  low = min(c_vec);
-  hi = max(c_vec);
+  low = min(c_vec);                                    // fill with minimum values
+  hi = max(c_vec);                                     // fill with maximum values
 }
 
 proc local_fun(ref x : c_vec, ref f : real, ref param_ : params){
