@@ -309,7 +309,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
 
     const auto t1 = chrono::high_resolution_clock::now();
 
-    for (unsigned i = 0; i < 10000; ++i) {
+    for (unsigned i = 0; i < 100; ++i) {
 
         // Building batches of input variables (X) and labels (y)
         int randindx = rand() % (trainData - BATCH_SIZE);
@@ -351,7 +351,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
         W1 = W1 - lr * dW1;
 
 
-        if ((i + 1) % 10001 == 0) {
+        if ((i + 1) % 500 == 0) {
             cout << "------------------------------Epoch " << i + 1
                  << "------------------------------" << "\n";
             vector<float> _a1 = relu(dot(_b_X, W1, dnn[0] - trainData, dnn[1], dnn[2]));
