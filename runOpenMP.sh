@@ -16,7 +16,7 @@ for file in $args
 do
     dnn=`cat $file`
     file="../$file"
-    for batch in 200 100 50
+    for batch in 200 100 50 1
     do
         for threads in 8 4 2 1
         do

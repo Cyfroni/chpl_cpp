@@ -114,7 +114,7 @@ proc main() {
   fillRandom(rand_indx);
   rand_indx = [indx in rand_indx] indx * (trainData-BATCH_SIZE);
 
-  for i in 1..100 {
+  for i in 1..1000 / BATCH_SIZE {
     var indx = rand_indx[i] : int;
 
     var b_x = x_train[(1..BATCH_SIZE) + indx, ..];

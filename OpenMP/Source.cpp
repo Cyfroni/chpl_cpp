@@ -309,7 +309,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
 
     const auto t1 = chrono::high_resolution_clock::now();
 
-    for (unsigned i = 0; i < 100; ++i) {
+    for (unsigned i = 0; i < 1000 / BATCH_SIZE ; ++i) {
 
         // Building batches of input variables (X) and labels (y)
         int randindx = rand() % (trainData - BATCH_SIZE);
