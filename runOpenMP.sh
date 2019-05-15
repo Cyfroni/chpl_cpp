@@ -7,14 +7,14 @@ chmod 755 clear.sh
 ./clear.sh
 cd ..
 
-for n in 200 400
+for n in 1024 2048
 do
-    for p in 20 10 5 2 1
+    for p in 32 16 8 1
     do
         for threads in 8 4 2 1
         do
             cd OpenMP
-            echo $n $p $threads
+            echo "$n $p ($threads)"
             ./openmp.out $n $p $threads
             cd ..
         done
