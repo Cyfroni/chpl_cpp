@@ -76,7 +76,7 @@ timer.start();
 if (p==1) {
   var par = (1,);
   donlp2_wrapper(N, N,
-    c_ptrTo(fopt[i]),
+    c_ptrTo(fopt[1]),
     c_ptrTo(xopt[1]),
     c_ptrTo(lamopt[1]),
     c_ptrTo(local_prob_init),
