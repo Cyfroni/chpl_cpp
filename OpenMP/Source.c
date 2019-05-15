@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
     }
     tf = omp_get_wtime();
 
-    printf("xopt =\n");
+    /*printf("xopt =\n");
     noel = 1;
     for (i = 1; i <= p; i++)
         for (j = 1; j <= ni; j++) {
@@ -209,7 +209,7 @@ int main(int argc, char **argv) {
             if (noel % 10 == 0)
                 printf("\n");
             noel = noel + 1;
-        }
+        }*/
     printf("%f\n", tf - t0);
 
     for (i = 0; i <= p; i++) {

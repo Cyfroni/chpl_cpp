@@ -115,5 +115,5 @@ if (p==1) {
 }
 
 
-writeln('xopt =\n', xopt);
+//writeln('xopt =\n', xopt);
 writeln(timer.elapsed());
