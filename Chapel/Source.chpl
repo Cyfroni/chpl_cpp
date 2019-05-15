@@ -11,7 +11,7 @@ param epsilon = 1e-6;
 //200 400
 //20 10 5 2 1
 
-param n = 400;
+param n = 10;
 param p = 1;
 param ni = n/p;
 type c_vec = (ni+1)*real;
@@ -101,28 +101,25 @@ if (p==1) {
       );
     }
 
-    var con_violQ : real;
     ft = 0;
     var alfa : real = n/(k+p);
     for i in 1..p {
-       var kco = i * ni;
-       var rhc = -0.5 + (-1) ** kco * kco;
+       var jN = i * ni;
+       var c = -0.5 + (-1) ** jN * jN;
        var inext = i % p + 1;
-       var gi = rhc + xopt[i][ni + 1] - xopt[inext][2];
-       con_violQ += max(0,gi) ** 2;
-       ft += fopt[i] + lamb[i] * rhc;
+       var gi = xopt[i][ni + 1] - xopt[inext][2] + c;
+       ft += fopt[i] + lamb[i] * c;
        lamb[i] = max(0, lamb[i] + alfa * gi);
     }
     dist_x = sqrt(+ reduce (+ reduce (xopt - xprev)**2));
-    var con_viol = sqrt(con_violQ);
     xprev = xopt;
     k+=1;
   }
 }
 
-/* writeln('Powell - ', n);
+writeln('Powell - ', n);
 writeln('-----------------------------------');
 writeln('xopt =\n', xopt);
 writeln('-----------------------------------');
-writeln('fopt = ', ft); */
+writeln('fopt = ', ft);
 writeln(timer.elapsed());
