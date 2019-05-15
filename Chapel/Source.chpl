@@ -13,9 +13,9 @@ param epsilon = 1e-6;
 
 param n = 10;
 param p = 1;
-param ni = n/p;
-type c_vec = (ni+1)*real;
-type chpl_array = [1..ni] real;
+param N = n/p;
+type c_vec = (N+1)*real;
+type chpl_array = [1..N] real;
 type chpl_matrix = [1..p] c_vec;
 type params = 1*int;
 
@@ -35,8 +35,8 @@ proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ 
 
   if (k==1){
     for j in y.domain {                                // initialize Powell20
-      var jabs = (i-1)*ni + j;
-      y[j] = if jabs % 2 == 0 then -0.5 - jabs else 0;
+      var jabs = (i-1)*N + j;
+      y[j] = if jabs % 2 == 0 then -0.5 - jabs else 0;                                            // (26)
     }
     to_c_array(y, x);
   } else {
@@ -49,19 +49,18 @@ proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ 
 
 proc local_fun(ref x : c_vec, ref f : real, ref param_ : params){
   var i = param_[1];
-  var sum = + reduce x**2;
-  var jprev = (i-2+p) % p + 1;
-  var aux = lamb[i]*x[ni+1] - lamb[jprev]*x[2];
-  f = 0.5 * sum + aux;
+  var jprev = (p-2+i) % p + 1;
+
+  f = 0.5 * (+ reduce x**2) + lamb[i]*x[N+1] - lamb[jprev]*x[2];                                // (42)
 }
 
 proc local_con(ref x : c_vec, ref con : c_vec, ref param_ : params){
   var i = param_[1];
-  for j in 2..ni {
-     var jabs = (i-1)*ni + j - 1;
-     con[j] = -0.5+(-1)**jabs*jabs + x[j] - x[j+1];
+  for l in 2..N {
+     var k = (i - 1) * N + l - 1;
+     con[l] = -0.5 + (-1)**k*k + x[l] - x[l+1];                                                 // (31)
   }
-  if( p == 1 ) then con[ni+1] = ni - 0.5 - x[2] + x[ni+1];
+  if( p == 1 ) then con[N+1] = N - 0.5 + x[N+1] - x[2];                                         // (26)
 }
 
 var fopt : [1..p] real;
@@ -76,7 +75,7 @@ timer.start();
 
 if (p==1) {
   var par = (1,);
-  donlp2_wrapper(ni, ni,
+  donlp2_wrapper(N, N,
     c_ptrTo(ft),
     c_ptrTo(xopt[1]),
     c_ptrTo(lamopt[1]),
@@ -90,7 +89,7 @@ if (p==1) {
   while dist_x > epsilon {
     for i in 1..p{
       var par = (i,);
-      donlp2_wrapper(ni, ni-1,
+      donlp2_wrapper(N, N-1,
         c_ptrTo(fopt[i]),
         c_ptrTo(xopt[i]),
         c_ptrTo(lamopt[i]),
@@ -101,13 +100,16 @@ if (p==1) {
       );
     }
 
+
+
+
     ft = 0;
     var alfa : real = n/(k+p);
     for i in 1..p {
-       var jN = i * ni;
+       var jN = i * N;
        var c = -0.5 + (-1) ** jN * jN;
        var inext = i % p + 1;
-       var gi = xopt[i][ni + 1] - xopt[inext][2] + c;
+       var gi = xopt[i][N + 1] - xopt[inext][2] + c;
        ft += fopt[i] + lamb[i] * c;
        lamb[i] = max(0, lamb[i] + alfa * gi);
     }
