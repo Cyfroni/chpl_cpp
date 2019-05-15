@@ -74,7 +74,7 @@ vector<float> softmax(const vector<float> &z, const int dim) {
         }
 
         for (unsigned j = 0; j < dim; ++j) {
-            foo[j] = exp(foo[j]));
+            foo[j] = exp(foo[j]);
         }
 
         float sum_of_elems = 0.0;
