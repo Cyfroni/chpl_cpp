@@ -31,11 +31,12 @@ proc to_c_array(ref y: chpl_array, ref x: c_vec){
 
 proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ : params){
   var i = param_[1];
+  var n = param_[2];
   var y : chpl_array;
 
   if (k==1){
     for j in y.domain {                                // initialize Powell20
-      var jabs = (i-1)*N + j;
+      var jabs = (i-1)*n + j;
       y[j] = if jabs % 2 == 0 then -0.5 - jabs else 0;                                            // (26)
     }
     to_c_array(y, x);
@@ -49,18 +50,20 @@ proc local_prob_init(ref x : c_vec, ref low : c_vec, ref hi : c_vec, ref param_ 
 
 proc local_fun(ref x : c_vec, ref f : real, ref param_ : params){
   var i = param_[1];
+  var n = param_[2];
   var jprev = (p-2+i) % p + 1;
 
-  f = 0.5 * (+ reduce x**2) + lamb[i]*x[N+1] - lamb[jprev]*x[2];                                // (42)
+  f = 0.5 * (+ reduce x**2) + lamb[i]*x[n+1] - lamb[jprev]*x[2];                                // (42)
 }
 
 proc local_con(ref x : c_vec, ref con : c_vec, ref param_ : params){
   var i = param_[1];
-  for l in 2..N {
-     var j = (i - 1) * N + l - 1;
+  var n = param_[2];
+  for l in 2..n {
+     var j = (i - 1) * n + l - 1;
      con[l] = -0.5 + (-1)**j*j + x[l] - x[l+1];                                                 // (31)
   }
-  if( p == 1 ) then con[N+1] = N - 0.5 + x[N+1] - x[2];                                         // (26)
+  if( p == 1 ) then con[n+1] = n - 0.5 + x[n+1] - x[2];                                         // (26)
 }
 
 var fopt : [1..p] real;
@@ -74,7 +77,7 @@ var timer : Timer;
 timer.start();
 
 if (p==1) {
-  var par = (1,);
+  var par = (1, N);
   donlp2_wrapper(N, N,
     c_ptrTo(fopt[1]),
     c_ptrTo(xopt[1]),
@@ -88,7 +91,7 @@ if (p==1) {
   var dist_x = 1.0;
   while dist_x > epsilon {
     forall i in 1..p{
-      var par = (i,);
+      var par = (i, N);
       donlp2_wrapper(N, N-1,
         c_ptrTo(fopt[i]),
         c_ptrTo(xopt[i]),
