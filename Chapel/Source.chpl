@@ -146,7 +146,7 @@ proc main() {
     W2 = W2 - lr * dW2;
     W1 = W1 - lr * dW1;
 
-    if (i % 500 == 0){
+    if (i % 2000 == 0){
         var _a1 = relu(dot(_b_x, W1));
         var _a2 = relu(dot(_a1, W2));
         var _yhat = softmax(dot(_a2, W3));

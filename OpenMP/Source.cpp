@@ -351,7 +351,7 @@ int main(int argc, const char *argv[]) { // argv = [file, batch, threads]
         W1 = W1 - lr * dW1;
 
 
-        if ((i + 1) % 500 == 0) {
+        if ((i + 1) % 2000 == 0) {
             cout << "------------------------------Epoch " << i + 1
                  << "------------------------------" << "\n";
             vector<float> _a1 = relu(dot(_b_X, W1, dnn[0] - trainData, dnn[1], dnn[2]));
