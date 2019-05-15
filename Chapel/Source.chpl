@@ -11,7 +11,7 @@ param epsilon = 1e-6;
 //200 400
 //20 10 5 2 1
 
-param n = 10;
+param n = 10; // 2.75 1.25 2.75 -0.75 2.75 -2.75 2.75 -4.75 2.75 -6.75
 param p = 1;
 param N = n/p;
 type c_vec = (N+1)*real;
@@ -57,8 +57,8 @@ proc local_fun(ref x : c_vec, ref f : real, ref param_ : params){
 proc local_con(ref x : c_vec, ref con : c_vec, ref param_ : params){
   var i = param_[1];
   for l in 2..N {
-     var k = (i - 1) * N + l - 1;
-     con[l] = -0.5 + (-1)**k*k + x[l] - x[l+1];                                                 // (31)
+     var j = (i - 1) * N + l - 1;
+     con[l] = -0.5 + (-1)**j*j + x[l] - x[l+1];                                                 // (31)
   }
   if( p == 1 ) then con[N+1] = N - 0.5 + x[N+1] - x[2];                                         // (26)
 }
@@ -76,7 +76,7 @@ timer.start();
 if (p==1) {
   var par = (1,);
   donlp2_wrapper(N, N,
-    c_ptrTo(ft),
+    c_ptrTo(fopt[i]),
     c_ptrTo(xopt[1]),
     c_ptrTo(lamopt[1]),
     c_ptrTo(local_prob_init),
@@ -100,17 +100,12 @@ if (p==1) {
       );
     }
 
-
-
-
-    ft = 0;
     var alfa : real = n/(k+p);
-    for i in 1..p {
-       var jN = i * N;
-       var c = -0.5 + (-1) ** jN * jN;
+    for i in 1..p {                                                                             // (42+)
+       var j = i * N;
+       var c = -0.5 + (-1) ** j * j;
        var inext = i % p + 1;
        var gi = xopt[i][N + 1] - xopt[inext][2] + c;
-       ft += fopt[i] + lamb[i] * c;
        lamb[i] = max(0, lamb[i] + alfa * gi);
     }
     dist_x = sqrt(+ reduce (+ reduce (xopt - xprev)**2));
@@ -119,9 +114,6 @@ if (p==1) {
   }
 }
 
-writeln('Powell - ', n);
-writeln('-----------------------------------');
+
 writeln('xopt =\n', xopt);
-writeln('-----------------------------------');
-writeln('fopt = ', ft);
 writeln(timer.elapsed());

@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
     int kco;
     double *fopt, **lamopt, alfa;
     double dist_x, con_violQ, con_viol;
-    double gi, rhc, ft, lami;
+    double gi, rhc, lami;
     double t0, tf;
     #define epsilon 1.e-6     /* the accuracy of approximation of the
                                 optimal solution in x space */
@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
         par.ni = n;
         donlp2_wrapper(nv, nc, &fopt[1], xopt[1], lamopt[1],
                        local_prob_init, local_fun, local_con, &par);
-        ft = fopt[1];
+
     } else {
         /* The version with decomposition     */
 
@@ -183,20 +183,16 @@ int main(int argc, char **argv) {
                                local_prob_init, local_fun, local_con, &par);
             }
 
-            con_violQ = 0.;
-            ft = 0.;
+
             alfa = ((double) n) / (k + p);
             for (i = 1; i <= p; i++) {
                 kco = i * ni;
                 rhc = -0.5 + pow(-1, kco) * kco;
                 inext = i % p + 1;
                 gi = rhc + xopt[i][ni] - xopt[inext][1];
-                con_violQ = con_violQ + pow(max(0., gi), 2);
-                ft = ft + fopt[i] + lambda[i] * rhc;
                 lambda[i] = max(0, lambda[i] + alfa * gi);
             }
             dist_x = Eucl_dist(p, ni, xopt, xprev);
-            con_viol = sqrt(con_violQ);
 
             for (i = 1; i <= p; i++)
                 for (j = 1; j <= ni; j++) xprev[i][j] = xopt[i][j];
@@ -204,20 +200,16 @@ int main(int argc, char **argv) {
         }
     }
     tf = omp_get_wtime();
-    // printf("Powell - %d:\n", n);
-    // printf("-----------------------------------\n");
-    // printf("xopt =\n");
-    // noel = 1;
-    // for (i = 1; i <= p; i++)
-    //     for (j = 1; j <= ni; j++) {
-    //         printf("%7.4f ", xopt[i][j]);
-    //         if (noel % 10 == 0)
-    //             printf("\n");
-    //         noel = noel + 1;
-    //     }
-    // printf("\n");
-    // printf("-----------------------------------\n");
-    // printf("fopt =%f\n", ft);
+
+    printf("xopt =\n");
+    noel = 1;
+    for (i = 1; i <= p; i++)
+        for (j = 1; j <= ni; j++) {
+            printf("%7.4f ", xopt[i][j]);
+            if (noel % 10 == 0)
+                printf("\n");
+            noel = noel + 1;
+        }
     printf("%f\n", tf - t0);
 
     for (i = 0; i <= p; i++) {
