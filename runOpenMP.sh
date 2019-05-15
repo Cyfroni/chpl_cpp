@@ -13,7 +13,7 @@ do
     do
         for threads in 8 4 2 1
         do
-            if [ "$threads" -ge "$p" ]; then
+            if [ "$p" -ge "$threads" ]; then
               cd OpenMP
               echo "$n $p ($threads)"
               ./openmp.out $n $p $threads

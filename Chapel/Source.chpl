@@ -87,7 +87,7 @@ if (p==1) {
 } else {
   var dist_x = 1.0;
   while dist_x > epsilon {
-    forall i in 1..p{
+    coforall i in 1..p{
       var par = (i,);
       donlp2_wrapper(N, N-1,
         c_ptrTo(fopt[i]),

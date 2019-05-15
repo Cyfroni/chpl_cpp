@@ -13,4 +13,4 @@ threads=$1
 export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
 echo "($threads)"
 
-./chpl.out
+./chpl.out -numLocales=$threads
