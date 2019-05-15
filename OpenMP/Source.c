@@ -173,7 +173,6 @@ int main(int argc, char **argv) {
         dist_x = 1.;
         while (dist_x > epsilon) {
 
-            /* the p independent calls of local problems  */
             #pragma omp parallel for num_threads(threads)
             for (i = 1; i <= p; i++) {
                 struct my_param par;
