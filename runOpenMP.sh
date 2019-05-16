@@ -9,7 +9,7 @@ cd ..
 
 for n in 1024 2048
 do
-    for p in 32 16 8 4 2
+    for p in 32 16 8 4 2 1
     do
         for threads in 8 4 2 1
         do
@@ -21,8 +21,4 @@ do
             fi
         done
     done
-    cd OpenMP
-    echo "$n 1 (1)"
-    ./openmp.out $n 1 1
-    cd ..
 done
