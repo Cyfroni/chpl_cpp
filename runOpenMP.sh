@@ -7,7 +7,7 @@ chmod 755 clear.sh
 ./clear.sh
 cd ..
 
-for n in 1024 2048
+for n in 512 1024
 do
     for p in 32 16 8 4 2 1
     do

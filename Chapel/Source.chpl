@@ -13,7 +13,6 @@ param epsilon = 1e-6;
 
 config param n = 1024;
 config param p = 32;
-writeln(n, "#", p);
 param N = n/p;
 type c_vec = (N+1)*real;
 type chpl_array = [1..N] real;
