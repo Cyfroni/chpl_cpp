@@ -11,8 +11,9 @@ param epsilon = 1e-6;
 // 1024 2048
 // 32 16 8 4 2 1
 
-config param n = 1024; // 2.75 1.25 2.75 -0.75 2.75 -2.75 2.75 -4.75 2.75 -6.75
+config param n = 1024;
 config param p = 32;
+writeln(n, "#", p);
 param N = n/p;
 type c_vec = (N+1)*real;
 type chpl_array = [1..N] real;
