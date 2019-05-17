@@ -2,15 +2,26 @@
 
 source chapel-1.18.0/util/setchplenv.bash
 
-cd Chapel
-chmod 755 compile.sh
-./compile.sh || exit 1
-chmod 755 clear.sh
-./clear.sh
+for n in 1024 2048
+do
+    for p in 32 16 8 4 2 1
+    do
+        for threads in 8 4 2 1
+        do
+            if [ "$p" -ge "$threads" ]; then
 
-threads=$1
+              cd Chapel
+              chmod 755 compile.sh
+              ./compile.sh -s n=$n p=$p || exit 1
+              chmod 755 clear.sh
+              ./clear.sh
+              
+              export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
+              echo "$n $p ($threads)"
+              ./chpl.out
+              cd ..
 
-export CHPL_RT_NUM_THREADS_PER_LOCALE=$threads
-echo "($threads)"
-
-./chpl.out -numLocales=$threads
+            fi
+        done
+    done
+done

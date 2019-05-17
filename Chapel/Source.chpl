@@ -8,11 +8,11 @@ extern proc donlp2_wrapper(args...) : c_int;
 param bigN = 1e20;
 param epsilon = 1e-6;
 
-//200 400
-//20 10 5 2 1
+// 1024 2048
+// 32 16 8 4 2 1
 
-param n = 10; // 2.75 1.25 2.75 -0.75 2.75 -2.75 2.75 -4.75 2.75 -6.75
-param p = 1;
+config param n = 1024; // 2.75 1.25 2.75 -0.75 2.75 -2.75 2.75 -4.75 2.75 -6.75
+config param p = 32;
 param N = n/p;
 type c_vec = (N+1)*real;
 type chpl_array = [1..N] real;
@@ -87,7 +87,7 @@ if (p==1) {
 } else {
   var dist_x = 1.0;
   while dist_x > epsilon {
-    coforall i in 1..p{
+    forall i in 1..p{
       var par = (i,);
       donlp2_wrapper(N, N-1,
         c_ptrTo(fopt[i]),
