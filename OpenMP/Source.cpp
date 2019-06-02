@@ -20,7 +20,7 @@ typedef vector <matrix> cube;
 
 enum algoritm {
     Belman_ford = 1,
-    Generic,
+    SPFA,
     SLF,
     LLL
 };
@@ -85,7 +85,7 @@ void bellman_ford(vec &dp, const vector <array<int, 3>> &g, const int s) {
     }
 }
 
-void generic(vec &dp, const vector <array<int, 3>> &g, const int s) {
+void spfa(vec &dp, const vector <array<int, 3>> &g, const int s) {
 // dp - vector of distances and predecessors (d, p)
 // g - graph (i, j, a)
 // s - start node
@@ -222,8 +222,8 @@ routing_table(matrix &table, const vector <array<int, 3>> &graph, const algoritm
 
     if (alg == Belman_ford)
         fun = &bellman_ford;
-    else if (alg == Generic)
-        fun = &generic;
+    else if (alg == SPFA)
+        fun = &spfa;
     else if (alg == SLF)
         fun = &slf;
     else if (alg == LLL)

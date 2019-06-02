@@ -7,7 +7,7 @@ args="*.in"
 algorithms=(
     null
     BF
-    Gen
+    SPFA
     SLF
     LLL
 )

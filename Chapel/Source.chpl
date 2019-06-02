@@ -4,7 +4,7 @@ config const alg : int;
 var _n : int;
 enum algoritm{
 	Belman_ford = 1,
-	Generic,
+	SPFA,
 	SLF,
 	LLL
 };
@@ -38,7 +38,7 @@ proc bellman_ford(dp, g, s){
 	}
 }
 
-proc generic(dp, g, s){
+proc spfa(dp, g, s){
 // dp - vector of distances and predecessors (d, p)
 // g - graph (i, j, a)
 // s - start node
@@ -146,7 +146,7 @@ proc routing_table(table, graph, al)
 	}
 	else if al == 2{
 		forall i in 1.._n {
-			generic(table[i, ..], graph, i);
+			spfa(table[i, ..], graph, i);
 		}
 	}
 	else if al == 3{
